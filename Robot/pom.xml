@@ -48,6 +48,11 @@
 			<artifactId>commons-text</artifactId>
 			<version>1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.pcj</groupId>
+			<artifactId>google-options</artifactId>
+			<version>[1.0.0, )</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -95,7 +100,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.fo0.node1.Node1</mainClass>
+							<mainClass>com.fo0.robot.main.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
