@@ -11,18 +11,20 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
+import com.fo0.robot.controller.ControllerChain;
 import com.fo0.robot.gui.sub.AddChainItemWindow;
+import com.fo0.robot.gui.sub.ConsoleWindow;
 import com.fo0.robot.model.ActionItem;
-import com.fo0.robot.model.BeanTableModel;
+import com.fo0.robot.model.BeanTableModelAction;
 
 public class MainGUI {
 
 	private static MainGUI window = null;
+	private static ConsoleWindow console = new ConsoleWindow();
 	private static JFrame frame;
 
-	private static BeanTableModel<ActionItem> tableModel;
+	private static BeanTableModelAction tableModel;
 	private static JTable actionTable;
 
 	/**
@@ -73,7 +75,7 @@ public class MainGUI {
 			}
 		});
 
-		btnAdd.setBounds(0, 0, 73, 24);
+		btnAdd.setBounds(110, 0, 73, 24);
 		panelTop.add(btnAdd);
 
 		JButton btnDel = new JButton("DEL");
@@ -87,12 +89,22 @@ public class MainGUI {
 		panelTop.add(btnDel);
 
 		JButton btnUp = new JButton("UP");
-		btnUp.setBounds(85, 0, 73, 24);
+		btnUp.setBounds(195, 0, 73, 24);
 		panelTop.add(btnUp);
 
 		JButton btnDown = new JButton("DOWN");
-		btnDown.setBounds(158, 0, 79, 24);
+		btnDown.setBounds(267, 0, 79, 24);
 		panelTop.add(btnDown);
+
+		JButton btnStart = new JButton("START");
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ControllerChain.getChain().start();
+				console.setVisible(true);
+			}
+		});
+		btnStart.setBounds(0, 0, 98, 24);
+		panelTop.add(btnStart);
 
 		JPanel panelTable = new JPanel();
 		panelTable.setBounds(0, 26, 495, 265);
@@ -101,17 +113,10 @@ public class MainGUI {
 		panelTable.setLayout(new CardLayout(0, 0));
 
 		actionTable = new JTable();
-		tableModel = createTableModel();
+		tableModel = new BeanTableModelAction();
 		actionTable.setModel(tableModel);
 		JScrollPane scrollPane = new JScrollPane(actionTable);
 		panelTable.add(scrollPane, "name_7985051461163");
-	}
-
-	private static BeanTableModel<ActionItem> createTableModel() {
-		BeanTableModel<ActionItem> tableModel = new BeanTableModel<ActionItem>(ActionItem.class);
-		tableModel.addColumn("Type", "type");
-		tableModel.addColumn("Value", "value");
-		return tableModel;
 	}
 
 	public static void addItem(ActionItem action) {

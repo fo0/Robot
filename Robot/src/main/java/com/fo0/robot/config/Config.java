@@ -5,7 +5,7 @@ import com.google.devtools.common.options.OptionsBase;
 
 public class Config extends OptionsBase {
 
-	@Option(name = "gui", abbrev = 'g', category = "gui", help = "simple gui", defaultValue = "false")
+	@Option(name = "gui", abbrev = 'g', category = "gui", help = "simple gui", defaultValue = "true")
 	public boolean gui;
 
 }

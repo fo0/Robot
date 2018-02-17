@@ -1,6 +1,6 @@
 package com.fo0.robot.main;
 
-import com.fo0.robot.backend.Controller;
+import com.fo0.robot.controller.Controller;
 
 public class Main {
 

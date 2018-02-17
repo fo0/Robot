@@ -1,7 +1,8 @@
-package com.fo0.robot.backend.chain;
+package com.fo0.robot.controller.chain;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.fo0.robot.model.ActionItem;
@@ -29,6 +30,12 @@ public class ActionContext {
 		int id = determineNextId();
 		map.put(id, item);
 		return new SimpleEntry<Integer, ActionItem>(id, item);
+	}
+
+	public void remove(ActionItem item) {
+		Entry<Integer, ActionItem> foundItem = map.entrySet().stream()
+				.filter(e -> e.getValue().getId().equals(item.getId())).findFirst().orElse(null);
+		map.remove(foundItem.getKey());
 	}
 
 	public SimpleEntry<Integer, ActionItem> pop() {

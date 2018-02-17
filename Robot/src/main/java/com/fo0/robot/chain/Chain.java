@@ -17,9 +17,15 @@ public class Chain<T> {
 
 	private Map<ChainID, ChainItem<T>> chains = new TreeMap<ChainID, ChainItem<T>>();
 
+	private ChainCmdListener<T> cmdListener = null;
+
 	public Chain() {
 	}
 
+	public void addCmdListener(ChainCmdListener<T> cmdListener) {
+		this.cmdListener = cmdListener;
+	}
+	
 	public Chain(String chainId, T context) {
 		this.id = chainId;
 		this.context = context;
@@ -145,6 +151,8 @@ public class Chain<T> {
 					e.getValue().getData().getState().setCmd(EChainResponse.Failed);
 					state = EState.Failed;
 					e.getValue().getData().getException().setCmd(e2);
+				} finally {
+					cmdListener.event(getContext(), e);
 				}
 
 				Logger.debug("finished Chain: " + id + ", Item-ID: " + e.getKey().getId() + " [" + e.getKey().getName()

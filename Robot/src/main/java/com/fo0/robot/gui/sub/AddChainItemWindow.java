@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.gui.main.MainGUI;
@@ -63,6 +64,8 @@ public class AddChainItemWindow {
 		frame.setLocationRelativeTo(null);
 		frame.getContentPane().setBackground(Color.LIGHT_GRAY);
 		frame.getContentPane().setLayout(null);
+		frame.setBackground(Color.LIGHT_GRAY);
+		frame.setResizable(false);
 
 		JLabel lblType = new JLabel("Type");
 		lblType.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -116,8 +119,14 @@ public class AddChainItemWindow {
 		lblIDValue.setHorizontalAlignment(SwingConstants.LEFT);
 		lblIDValue.setFont(new Font("Dialog", Font.BOLD, 16));
 		lblIDValue.setBounds(105, 11, 366, 29);
+
 		frame.getContentPane().add(lblIDValue);
-		frame.setBackground(Color.LIGHT_GRAY);
-		frame.setResizable(false);
+
+		SwingUtilities.invokeLater(new Runnable() {
+
+			public void run() {
+				txtAction.requestFocus();
+			}
+		});
 	}
 }

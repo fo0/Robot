@@ -1,4 +1,4 @@
-package com.fo0.robot.backend;
+package com.fo0.robot.controller;
 
 import com.fo0.robot.config.Config;
 import com.fo0.robot.config.ConfigParser;
@@ -15,6 +15,12 @@ public class Controller {
 
 		// apply the config options
 		applyConfig();
+
+		modules();
+	}
+
+	private static void modules() {
+		ControllerChain.bootstrap();
 	}
 
 	private static void applyConfig() {
