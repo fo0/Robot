@@ -11,7 +11,7 @@ public class SimpleChainTest {
 	@Test
 	public void defaults() {
 		ChainActions actions = new ChainActions();
-		actions.addActionItem(ActionItem.builder().value("echo lol").build());
+		actions.addActionItem(ActionItem.builder().value("echo lol").description("description example").build());
 		actions.start();
 		System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(actions.getChainInfo()));
 	}

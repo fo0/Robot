@@ -25,7 +25,7 @@ public class Chain<T> {
 	public void addCmdListener(ChainCmdListener<T> cmdListener) {
 		this.cmdListener = cmdListener;
 	}
-	
+
 	public Chain(String chainId, T context) {
 		this.id = chainId;
 		this.context = context;
@@ -54,6 +54,11 @@ public class Chain<T> {
 
 	public boolean addToChain(String name, ChainItem<T> item) {
 		chains.put(ChainID.builder().name(name).id(determineNextId()).build(), item);
+		return true;
+	}
+	
+	public boolean addToChain(String name, String description,ChainItem<T> item) {
+		chains.put(ChainID.builder().name(name).description(description).id(determineNextId()).build(), item);
 		return true;
 	}
 

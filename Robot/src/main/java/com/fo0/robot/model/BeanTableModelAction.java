@@ -1,6 +1,5 @@
 package com.fo0.robot.model;
 
-import com.fo0.robot.controller.Controller;
 import com.fo0.robot.controller.ControllerChain;
 
 public class BeanTableModelAction extends BeanTableModel<ActionItem> {
@@ -12,6 +11,7 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 
 		addColumn("Type", "type");
 		addColumn("Value", "value");
+		addColumn("Description", "description");
 	}
 
 	@Override

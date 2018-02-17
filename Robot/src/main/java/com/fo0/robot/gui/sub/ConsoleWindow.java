@@ -1,26 +1,13 @@
 package com.fo0.robot.gui.sub;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.JTextArea;
 
 import com.fo0.robot.controller.ControllerChain;
-import com.fo0.robot.enums.EActionType;
-import com.fo0.robot.gui.main.MainGUI;
-import com.fo0.robot.model.ActionItem;
-import java.awt.CardLayout;
-import javax.swing.JTextPane;
-import javax.swing.JTextArea;
 
 public class ConsoleWindow {
 
@@ -45,7 +32,7 @@ public class ConsoleWindow {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Console");
-		frame.setBounds(100, 100, 541, 410);
+		frame.setBounds(100, 100, 675, 413);
 
 		// center frame on screen
 		frame.setLocationRelativeTo(null);
@@ -59,10 +46,18 @@ public class ConsoleWindow {
 
 		new Thread(() -> {
 			ControllerChain.getChain().addCmdListener((ctx, e) -> {
-				appendToConsole(String.format("ID: %s :: Action: %s - State: %s ", e.getKey().getId(),
-						e.getKey().getName(), e.getValue().getData().getState().getCmd()));
+				appendToConsole(String.valueOf(e.getKey().getId()), e.getKey().getName(), e.getKey().getDescription(),
+						e.getValue().getData().getState().getCmd().name());
 			});
 		}).start();
+	}
+
+	public void appendToConsole(String id, String name, String description, String state) {
+		console.setEditable(true);
+		console.append(
+				String.format("ID: %s [%s]\n   Type: %s\n   Description: %s\n", id, state, name, description) + "\n");
+		console.setEditable(false);
+		console.validate();
 	}
 
 	public void appendToConsole(String text) {
@@ -70,6 +65,5 @@ public class ConsoleWindow {
 		console.append(text + "\n");
 		console.setEditable(false);
 		console.validate();
-		// console.repaint();
 	}
 }

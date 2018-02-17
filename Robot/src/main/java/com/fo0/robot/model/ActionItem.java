@@ -17,6 +17,9 @@ public class ActionItem {
 	private EActionType type = EActionType.Commandline;
 
 	@Builder.Default
+	private String description;
+
+	@Builder.Default
 	private String value;
 
 }

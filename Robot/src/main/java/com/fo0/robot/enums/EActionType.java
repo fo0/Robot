@@ -4,14 +4,4 @@ public enum EActionType {
 
 	Commandline,
 
-	Copy,
-
-	Move,
-
-	Create_File,
-
-	Create_Folder,
-
-	Download
-
 }

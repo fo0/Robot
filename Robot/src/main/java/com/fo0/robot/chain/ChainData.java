@@ -11,6 +11,9 @@ public class ChainData {
 	private ChainState state = ChainState.builder().build();
 
 	@Builder.Default
+	private Object object;
+
+	@Builder.Default
 	private ChainExeptions exception = ChainExeptions.builder().build();
 
 }

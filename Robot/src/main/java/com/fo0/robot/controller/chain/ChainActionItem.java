@@ -6,11 +6,14 @@ import com.fo0.robot.chain.ChainCommand;
 import com.fo0.robot.chain.EChainResponse;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.utils.Logger;
+import com.fo0.robot.utils.Random;
 
 import lombok.Builder;
 
 @Builder
 public class ChainActionItem implements ChainCommand<ActionContext> {
+
+	private ActionItem item;
 
 	@Override
 	public EChainResponse command(ActionContext ctx) throws Exception {
@@ -19,6 +22,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 		// info
 		Logger.info("popped action: " + item.getKey() + ", " + item.getValue());
+
+		if (Random.numeric(1) % 2 == 0)
+			return EChainResponse.Break;
 
 		// return all ok
 		return EChainResponse.Continue;
