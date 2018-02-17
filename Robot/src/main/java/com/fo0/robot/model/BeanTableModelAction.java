@@ -10,8 +10,8 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 		super(ActionItem.class);
 
 		addColumn("Type", "type");
-		addColumn("Value", "value");
 		addColumn("Description", "description");
+		addColumn("Value", "value");
 	}
 
 	@Override
@@ -24,6 +24,12 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 	public void removeRow(ActionItem row) {
 		super.removeRow(row);
 		ControllerChain.getChain().removeActionItem(row);
+	}
+	
+	public void loadActionContextFromController() {
+		ControllerChain.getChain().getContext().getMap().entrySet().stream().forEach(e -> {
+			addRow(e.getValue());
+		});
 	}
 
 }

@@ -15,6 +15,7 @@ import javax.swing.JTable;
 import com.fo0.robot.controller.ControllerChain;
 import com.fo0.robot.gui.sub.AddChainItemWindow;
 import com.fo0.robot.gui.sub.ConsoleWindow;
+import com.fo0.robot.gui.sub.ConfigWindow;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.BeanTableModelAction;
 
@@ -55,7 +56,7 @@ public class MainGUI {
 		frame.setTitle("TheRobot");
 		frame.getContentPane().setLayout(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(100, 100, 497, 318);
+		frame.setBounds(100, 100, 516, 319);
 
 		// center frame on screen
 		frame.setLocationRelativeTo(null);
@@ -64,7 +65,7 @@ public class MainGUI {
 		frame.setResizable(false);
 
 		JPanel panelTop = new JPanel();
-		panelTop.setBounds(0, 0, 495, 25);
+		panelTop.setBounds(0, 0, 514, 25);
 		frame.getContentPane().add(panelTop);
 		panelTop.setLayout(null);
 
@@ -75,7 +76,7 @@ public class MainGUI {
 			}
 		});
 
-		btnAdd.setBounds(110, 0, 73, 24);
+		btnAdd.setBounds(97, 0, 73, 24);
 		panelTop.add(btnAdd);
 
 		JButton btnDel = new JButton("DEL");
@@ -85,15 +86,15 @@ public class MainGUI {
 				tableModel.removeRow(tableModel.getRow(col));
 			}
 		});
-		btnDel.setBounds(422, 0, 73, 24);
+		btnDel.setBounds(345, 0, 73, 24);
 		panelTop.add(btnDel);
 
 		JButton btnUp = new JButton("UP");
-		btnUp.setBounds(195, 0, 73, 24);
+		btnUp.setBounds(182, 0, 73, 24);
 		panelTop.add(btnUp);
 
 		JButton btnDown = new JButton("DOWN");
-		btnDown.setBounds(267, 0, 79, 24);
+		btnDown.setBounds(254, 0, 79, 24);
 		panelTop.add(btnDown);
 
 		JButton btnStart = new JButton("START");
@@ -106,8 +107,17 @@ public class MainGUI {
 		btnStart.setBounds(0, 0, 98, 24);
 		panelTop.add(btnStart);
 
+		JButton btnSave = new JButton("CONFIG");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new ConfigWindow();
+			}
+		});
+		btnSave.setBounds(422, 0, 92, 24);
+		panelTop.add(btnSave);
+
 		JPanel panelTable = new JPanel();
-		panelTable.setBounds(0, 26, 495, 265);
+		panelTable.setBounds(0, 26, 514, 265);
 		frame.getContentPane().add(panelTable);
 
 		panelTable.setLayout(new CardLayout(0, 0));
@@ -131,4 +141,7 @@ public class MainGUI {
 		tableModel.removeRow(action);
 	}
 
+	public static BeanTableModelAction getTableModel() {
+		return tableModel;
+	}
 }
