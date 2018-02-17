@@ -3,6 +3,8 @@ package com.fo0.robot.controller;
 import com.fo0.robot.config.Config;
 import com.fo0.robot.config.ConfigParser;
 import com.fo0.robot.gui.main.MainGUI;
+import com.fo0.robot.utils.CONSTANTS;
+import com.fo0.robot.utils.Logger;
 
 public class Controller {
 
@@ -17,6 +19,12 @@ public class Controller {
 		applyConfig();
 
 		modules();
+	}
+
+	private void startUpMessage() {
+		// startup messages here
+		Logger.info("Starting Robot");
+		Logger.info("Version: " + CONSTANTS.VERSION);
 	}
 
 	private static void modules() {

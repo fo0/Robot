@@ -18,6 +18,7 @@ import com.fo0.robot.gui.sub.ConsoleWindow;
 import com.fo0.robot.gui.sub.ConfigWindow;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.BeanTableModelAction;
+import com.fo0.robot.utils.CONSTANTS;
 
 public class MainGUI {
 
@@ -53,7 +54,7 @@ public class MainGUI {
 	private static void initialize() {
 		// create main frame
 		frame = new JFrame();
-		frame.setTitle("TheRobot");
+		frame.setTitle("Robot v" + CONSTANTS.VERSION);
 		frame.getContentPane().setLayout(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(100, 100, 516, 319);
