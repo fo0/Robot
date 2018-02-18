@@ -47,6 +47,12 @@ Load Config-File on StartUp
 
     #!/bin/bash
     java -jar Robot.jar --config /your/path/to/robot_cfg.robot
+
+Using on CLI and Load Config-File on StartUp
+
+
+    #!/bin/bash
+    java -jar Robot.jar --nogui --config /your/path/to/robot_cfg.robot
     
 ## Windows
 default
