@@ -17,9 +17,11 @@ Depends:
   
   
 # Config
-For Help
+For Commandline Help:
 
     java -jar Robot.jar --help
+
+Options:
 
     Options category 'config':
       --cfg [-c] (a string; default: "")
