@@ -1,14 +1,10 @@
 package com.fo0.robot.controller;
 
-import java.io.File;
-
 import com.fo0.robot.config.Config;
 import com.fo0.robot.config.ConfigParser;
-import com.fo0.robot.controller.chain.ActionContext;
 import com.fo0.robot.gui.main.MainGUI;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Logger;
-import com.fo0.robot.utils.Parser;
 
 public class Controller {
 
@@ -44,11 +40,7 @@ public class Controller {
 
 	private static void applyConfig() {
 		if (config.configFile != null && !config.configFile.isEmpty()) {
-			ActionContext ctx = Parser.load(new File(config.configFile), ActionContext.class);
-			Logger.info("loading configfile: " + config.configFile + ", Success: " + (ctx != null ? "true" : "false"));
-			if (ctx != null)
-				ControllerChain.getChain().setContext(ctx);
-
+			ControllerChain.getChain().getContext().load(config.configFile);
 		}
 
 		if (config.gui == true) {

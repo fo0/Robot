@@ -1,4 +1,4 @@
-package com.fo0.robot.controller.chain;
+package com.fo0.robot.chain.action;
 
 import java.util.Map.Entry;
 

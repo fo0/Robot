@@ -12,8 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.fo0.robot.chain.action.ActionContext;
 import com.fo0.robot.controller.ControllerChain;
-import com.fo0.robot.controller.chain.ActionContext;
 import com.fo0.robot.gui.main.MainGUI;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.Parser;
@@ -71,7 +71,7 @@ public class ConfigWindow {
 					}
 
 					// save config to disk -> file
-					Parser.write(ControllerChain.getChain().getContext(), file);
+					ControllerChain.getChain().getContext().save(file.getAbsolutePath());
 					close();
 				}
 			}
@@ -91,12 +91,7 @@ public class ConfigWindow {
 					File file = chooser.getSelectedFile();
 
 					// load config from disk -> file
-					ActionContext ctx = Parser.load(file, ActionContext.class);
-
-					if (ctx == null)
-						return;
-
-					ControllerChain.getChain().setContext(ctx);
+					ControllerChain.getChain().getContext().load(file.getAbsolutePath());
 					MainGUI.getTableModel().loadActionContextFromController();
 					close();
 				}

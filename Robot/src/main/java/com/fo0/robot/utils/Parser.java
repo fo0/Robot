@@ -17,10 +17,7 @@ import com.google.gson.reflect.TypeToken;
 public class Parser {
 
 	public static <T> void write(T obj, File destFile) {
-		if (obj == null)
-			return;
-
-		if (destFile == null)
+		if (obj == null  || destFile == null)
 			return;
 
 		if (!destFile.exists())
@@ -38,14 +35,13 @@ public class Parser {
 		}
 	}
 
-	public static <T> T load(File file, Class<T> clazz) {
+	public static <T> T read(File file, Class<T> clazz) {
 		if (file == null || !file.exists())
 			return null;
 
 		FileInputStream fis = null;
 
 		try {
-
 			fis = new FileInputStream(file);
 
 			T obj = new GsonBuilder().setPrettyPrinting().create().fromJson(new InputStreamReader(fis, "UTF-8"),

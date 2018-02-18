@@ -1,11 +1,15 @@
-package com.fo0.robot.controller.chain;
+package com.fo0.robot.chain.action;
 
+import java.io.File;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.fo0.robot.model.ActionItem;
+import com.fo0.robot.utils.Logger;
+import com.fo0.robot.utils.Parser;
 
 import lombok.Builder;
 import lombok.Data;
@@ -61,8 +65,17 @@ public class ActionContext {
 
 	public void reset() {
 		start = 0;
-		end = 0;
+		end = map.size();
 		current = 0;
+	}
+
+	public void clear() {
+		reset();
+		try {
+			map.clear();
+		} catch (Exception e) {
+			map = new HashMap<>();
+		}
 	}
 
 	public int getCurrent() {
@@ -76,5 +89,32 @@ public class ActionContext {
 			int id = map.entrySet().stream().map(e -> e.getKey()).max(Integer::compareTo).orElse(0);
 			return id = id + 1;
 		}
+	}
+
+	public void save(String path) {
+		Logger.info("saving config-file: " + path);
+		Parser.write(this, new File(path));
+	}
+
+	public void load(String path) {
+		ActionContext ctx = Parser.read(new File(path), ActionContext.class);
+
+		if (ctx == null) {
+			Logger.error("failed to load context from file: " + path);
+		}
+
+		try {
+			setCurrent(ctx.getCurrent());
+			setEnd(ctx.getEnd());
+			setStart(ctx.getStart());
+			getMap().clear();
+			getMap().putAll(ctx.getMap());
+
+			Logger.info("loading config-file: " + path + ", Success: " + (ctx != null ? "true" : "false"));
+		} catch (Exception e) {
+			clear();
+			Logger.error("loading config-file failed, clear context");
+		}
+
 	}
 }

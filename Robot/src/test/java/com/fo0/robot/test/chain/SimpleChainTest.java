@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.fo0.robot.chain.EState;
-import com.fo0.robot.controller.chain.ChainActions;
+import com.fo0.robot.chain.action.ChainActions;
 import com.fo0.robot.model.ActionItem;
 
 public class SimpleChainTest {

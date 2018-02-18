@@ -1,6 +1,6 @@
 package com.fo0.robot.controller;
 
-import com.fo0.robot.controller.chain.ChainActions;
+import com.fo0.robot.chain.action.ChainActions;
 import com.fo0.robot.utils.Logger;
 
 public class ControllerChain {
