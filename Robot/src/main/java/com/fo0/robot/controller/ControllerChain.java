@@ -8,7 +8,7 @@ public class ControllerChain {
 	private static ChainActions chain = new ChainActions();
 
 	public static void bootstrap() {
-		Logger.info("started controller chain");
+		Logger.info("started controller: controllerchain");
 	}
 
 	public static ChainActions getChain() {

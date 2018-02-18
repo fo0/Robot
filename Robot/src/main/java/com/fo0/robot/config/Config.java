@@ -5,9 +5,9 @@ import com.google.devtools.common.options.OptionsBase;
 
 public class Config extends OptionsBase {
 
-	@Option(name = "gui", abbrev = 'g', category = "gui", help = "simple gui", defaultValue = "true")
-	public boolean gui;
+	@Option(name = "nogui", abbrev = 'n', category = "GUI", help = "Graphical User Interface", defaultValue = "false")
+	public boolean nogui;
 
-	@Option(name = "cfg", abbrev = 'c', category = "config", help = "read config", defaultValue = "")
+	@Option(name = "cfg", abbrev = 'c', category = "config", help = "Read config by Path", defaultValue = "")
 	public String configFile;
 }

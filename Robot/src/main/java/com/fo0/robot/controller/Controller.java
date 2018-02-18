@@ -43,8 +43,19 @@ public class Controller {
 			ControllerChain.getChain().getContext().load(config.configFile);
 		}
 
-		if (config.gui == true) {
+		if (!config.nogui) {
 			MainGUI.bootstrap();
+		}
+
+		// detect if cli and path set, automatically execute chain
+		if (config.nogui && config.configFile != null && !config.configFile.isEmpty()) {
+			Logger.info("detected cli mode - automatically started chain");
+			ControllerChain.getChain().start();
+		}
+
+		if (config.nogui && (config.configFile == null || config.configFile.isEmpty())) {
+			Logger.info("detected cli mode, but no config - exiting now");
+			System.exit(0);
 		}
 
 	}
