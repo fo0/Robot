@@ -23,13 +23,13 @@ For Commandline Help:
 
 Options:
 
+    Options category 'GUI':
+      --[no]nogui [-n] (a boolean; default: "false")
+        Graphical User Interface
+
     Options category 'config':
       --cfg [-c] (a string; default: "")
-        read config
-
-    Options category 'gui':
-      --[no]gui [-g] (a boolean; default: "true")
-        simple gui
+        Read config by Path
 
 # Start-Scripts
 
