@@ -39,6 +39,7 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 
 	public void loadActionContextFromController() {
 		try {
+			ControllerChain.getChain().getContext().clear();
 			ControllerChain.getChain().getContext().getMap().entrySet().stream().forEach(e -> {
 				addRow(e.getValue());
 			});

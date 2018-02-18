@@ -46,7 +46,7 @@ public class ConfigWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setTitle("Console");
+		frame.setTitle("Config");
 		frame.setBounds(100, 100, 413, 216);
 
 		// center frame on screen

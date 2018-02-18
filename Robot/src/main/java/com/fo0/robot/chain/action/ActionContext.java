@@ -101,6 +101,7 @@ public class ActionContext {
 
 		if (ctx == null) {
 			Logger.error("failed to load context from file: " + path);
+			return;
 		}
 
 		try {
