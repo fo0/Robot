@@ -1,14 +1,8 @@
 package com.fo0.robot.utils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.StreamHandler;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -17,14 +11,16 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Commander {
 
-	public static List<String> execute(boolean shell, String homedir, String cmds) {
+	private boolean error = false;
+	private String output;
 
+	public String execute(boolean shell, String homedir, String cmds) {
 		if (cmds == null || cmds.isEmpty()) {
 			Logger.info("stopped cmd command is empty");
 			return null;
 		}
 
-		List<String> listOutput = new ArrayList<String>();
+		StringBuffer buffer = new StringBuffer();
 		CommandLine cli = null;
 		DefaultExecutor executor = null;
 
@@ -57,41 +53,47 @@ public class Commander {
 
 				@Override
 				public void write(int b) throws IOException {
-					System.out.println((char) b);
+					try {
+						buffer.append((char) b);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 				}
 			}, new OutputStream() {
 
 				@Override
 				public void write(int b) throws IOException {
-					System.out.println((char) b);
+					error = true;
+					try {
+						buffer.append((char) b);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}));
 
-		} catch (Exception e) {
-			Logger.error("failed commander in Cmd: " + cli + " | " + e);
-		}
-		return null;
+			try {
+				executor.wait(30 * 1000);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 
+		} catch (Exception e) {
+			error = true;
+			Logger.error("failed commander in Cmd: " + cli + " | " + e);
+			e.printStackTrace();
+		}
+		output = buffer.toString();
+		return output;
 	}
 
-	private static List<String> getStringListFromStream(InputStream stream) throws IOException {
-		if (stream != null) {
-			List<String> list = new ArrayList<String>();
+	public boolean isError() {
+		return error;
+	}
 
-			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					Logger.debug(line);
-					list.add(line);
-				}
-
-			} finally {
-				stream.close();
-			}
-			return list;
-		} else
-			return null;
+	public String getOutput() {
+		return output;
 	}
 
 }

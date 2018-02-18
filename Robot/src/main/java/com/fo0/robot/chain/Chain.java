@@ -111,10 +111,11 @@ public class Chain<T> {
 				try {
 					e.getValue().getData().getState().setPre(e.getValue().getPreCommand().preCommand(context));
 
-					if (e.getValue().getData().getState().getPre().code() > 0)
+					if (e.getValue().getData().getState().getPre().code() > 0) {
 						e.getValue().getData().getState().setState(EState.Success);
-					else
+					} else {
 						e.getValue().getData().getState().setState(EState.Failed);
+					}
 
 				} catch (Exception e2) {
 					Logger.debug("failed to exec pre chain of: " + id + ", " + e2);
@@ -133,10 +134,11 @@ public class Chain<T> {
 				try {
 					e.getValue().getData().getState().setPost(e.getValue().getPostCommand().postCommand(context));
 
-					if (e.getValue().getData().getState().getPost().code() > 0)
+					if (e.getValue().getData().getState().getPost().code() > 0) {
 						e.getValue().getData().getState().setState(EState.Success);
-					else
+					} else {
 						e.getValue().getData().getState().setState(EState.Failed);
+					}
 
 				} catch (Exception e2) {
 					Logger.debug("failed to exec post chain of: " + id + ", " + e2);
@@ -154,6 +156,13 @@ public class Chain<T> {
 				e.getValue().getData().getState().setCmd(EChainResponse.Set);
 				try {
 					e.getValue().getData().getState().setCmd(e.getValue().getCommand().command(context));
+
+					if (e.getValue().getData().getState().getCmd().code() > 0) {
+						e.getValue().getData().getState().setState(EState.Success);
+					} else {
+						e.getValue().getData().getState().setState(EState.Failed);
+					}
+
 				} catch (Exception e2) {
 					Logger.debug("failed to exec main exec chain of: " + id + ", " + e2);
 					e.getValue().getData().getState().setState(EState.Failed);
@@ -168,6 +177,7 @@ public class Chain<T> {
 				Logger.debug("finished Chain: " + id + ", Item-ID: " + e.getKey().getId() + " [" + e.getKey().getName()
 						+ "]" + " Post: " + e.getValue().getData().getState().getCmd());
 			}
+
 			if (e.getValue().getData().getState().getState() == EState.Failed) {
 				Logger.error("failed to execute chain chunk, stopping chain: " + id + ", state: "
 						+ e.getValue().getData().getState() + ", Exception: " + e.getValue().getData().getException());

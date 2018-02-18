@@ -21,7 +21,14 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		// info
 		Logger.info("popped action: " + item.getKey() + ", " + item.getValue());
 
-		Commander.execute(true, System.getProperty("user.dir"), item.getValue().getValue());
+		// execute commands
+		Commander commander = new Commander();
+		commander.execute(true, System.getProperty("user.dir"), item.getValue().getValue());
+
+		if (commander == null || commander.isError()) {
+			Logger.error("found errors in commander: " + item.getKey());
+			return EChainResponse.Failed;
+		}
 
 		// return all ok
 		return EChainResponse.Continue;
