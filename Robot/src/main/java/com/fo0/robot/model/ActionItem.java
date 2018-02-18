@@ -39,11 +39,11 @@ public class ActionItem {
 
 		case Download:
 			// doing parsing
-			Pattern p = Pattern.compile("(\\$)(\\w+)" + Pattern.quote("(") + "(.+?)" + Pattern.quote(")"));
+			Pattern p = Pattern.compile("(\\$\\w+)" + Pattern.quote("(") + "(.+?)" + Pattern.quote(")"));
 			Matcher m = p.matcher(value);
 
 			while (m.find()) {
-				list.add(KeyValue.builder().key(m.group(2)).value(m.group(3)).build());
+				list.add(KeyValue.builder().key(m.group(1)).value(m.group(2)).build());
 			}
 			break;
 

@@ -15,6 +15,7 @@ import com.fo0.robot.chain.ChainCommand;
 import com.fo0.robot.chain.EChainResponse;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.KeyValue;
+import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Commander;
 import com.fo0.robot.utils.Logger;
 import com.google.common.collect.Lists;
@@ -48,12 +49,12 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			KeyValue url = null;
 			KeyValue path = null;
 
-			url = downloads.stream().filter(e -> e.getKey().equals("URL")).findFirst().orElse(null);
-			path = downloads.stream().filter(e -> e.getKey().equals("PATH")).findFirst()
-					.orElse(KeyValue.builder().key("PATH").value(FilenameUtils.getName(url.getValue())).build());
+			url = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
+			path = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst().orElse(
+					KeyValue.builder().key(CONSTANTS.DESTINATION).value(FilenameUtils.getName(url.getValue())).build());
 
-			Logger.info("URL: " + url.getValue());
-			Logger.info("Path: " + path.getValue());
+			Logger.info("SRC: " + url.getValue());
+			Logger.info("DEST: " + path.getValue());
 
 			// create file
 			File file = new File(Paths.get(path.getValue()).toAbsolutePath().toString());
@@ -65,6 +66,24 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			file.createNewFile();
 
 			FileUtils.copyInputStreamToFile(new URL(url.getValue()).openStream(), file);
+			break;
+
+		case Zip:
+			List<KeyValue> zipList = item.getValue().parsedValue();
+			KeyValue zipSrc = null;
+			KeyValue zipDest = null;
+
+			zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
+			zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+					.orElse(KeyValue.builder().build());
+
+			Logger.info("SRC: " + zipSrc.getValue());
+			Logger.info("DEST: " + zipDest.getValue());
+
+			break;
+
+		case Unzip:
+
 			break;
 
 		default:
