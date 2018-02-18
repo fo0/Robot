@@ -2,6 +2,8 @@ package com.fo0.robot.controller;
 
 import java.io.File;
 
+import javax.xml.stream.events.StartDocument;
+
 import com.fo0.robot.config.Config;
 import com.fo0.robot.config.ConfigParser;
 import com.fo0.robot.controller.chain.ActionContext;
@@ -19,16 +21,23 @@ public class Controller {
 		// parse args for config
 		config = ConfigParser.parseConfig(args);
 
+		// startup message
+		startUpMessage();
+
 		// apply the config options
 		modules();
 
 		applyConfig();
 	}
 
-	private void startUpMessage() {
+	private static void startUpMessage() {
 		// startup messages here
-		Logger.info("Starting Robot");
-		Logger.info("Version: " + CONSTANTS.VERSION);
+		Logger.info("##############################################");
+		Logger.info("	Starting Robot");
+		Logger.info("	Version: " + CONSTANTS.VERSION);
+		Logger.info("	Author: fo0");
+		Logger.info("	GitHub: https://github.com/fo0/Robot");
+		Logger.info("##############################################");
 	}
 
 	private static void modules() {
