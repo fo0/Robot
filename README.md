@@ -1,7 +1,7 @@
 # Robot
 
 Simple Robot which is doing user defined actions for you. <br>
-You can save your Actions configs to persist your work.
+You can load and save your actions via configs to persist your work.
 
 # Environment
 Works on:
