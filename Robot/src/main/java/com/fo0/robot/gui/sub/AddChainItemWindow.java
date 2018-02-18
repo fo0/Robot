@@ -1,5 +1,6 @@
 package com.fo0.robot.gui.sub;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -11,8 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -20,13 +21,12 @@ import javax.swing.SwingUtilities;
 import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.gui.main.MainGUI;
 import com.fo0.robot.model.ActionItem;
-import javax.swing.JPanel;
-import java.awt.CardLayout;
+import com.fo0.robot.model.AdvancedTextArea;
 
 public class AddChainItemWindow {
 
 	private JFrame frame;
-	private JTextArea txtAction;
+	private AdvancedTextArea txtAction;
 
 	private ActionItem item;
 	private JLabel lblIDValue;
@@ -86,10 +86,26 @@ public class AddChainItemWindow {
 		lblAction.setBounds(1, 133, 113, 29);
 		frame.getContentPane().add(lblAction);
 
+		txtAction = new AdvancedTextArea();
+		txtAction.setWrapStyleWord(true);
+		txtAction.setLineWrap(true);
+		txtAction.setText(item.getValue());
+		txtAction.setColumns(10);
+		JScrollPane scrollPane = new JScrollPane(txtAction);
+
 		cbType = new JComboBox<EActionType>();
 		cbType.setModel(new DefaultComboBoxModel(EActionType.values()));
+		cbType.addItemListener(e -> {
+			if (e.getItem() != null) {
+				if (e.getItem() instanceof EActionType) {
+					EActionType selectedType = (EActionType) e.getItem();
+					if (selectedType != null)
+						txtAction.setHint(selectedType.getHint());
+				}
+			}
+		});
 		cbType.setBounds(126, 57, 192, 29);
-		cbType.addItem(item.getType());
+		cbType.setSelectedItem(item.getType());
 		frame.getContentPane().add(cbType);
 
 		btnSave = new JButton("Save");
@@ -144,18 +160,12 @@ public class AddChainItemWindow {
 		frame.getContentPane().add(panelTxtArea);
 		panelTxtArea.setLayout(new CardLayout(0, 0));
 
-		txtAction = new JTextArea();
-		txtAction.setWrapStyleWord(true);
-		txtAction.setLineWrap(true);
-		txtAction.setText(item.getValue());
-		txtAction.setColumns(10);
-		JScrollPane scrollPane = new JScrollPane(txtAction);
 		panelTxtArea.add(scrollPane, "name_7623088305357");
 
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
-				txtAction.requestFocus();
+				txtDescription.requestFocus();
 			}
 		});
 	}

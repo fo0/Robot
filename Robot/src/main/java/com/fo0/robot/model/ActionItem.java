@@ -1,5 +1,10 @@
 package com.fo0.robot.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.utils.Random;
 
@@ -24,4 +29,28 @@ public class ActionItem {
 	@Builder.Default
 	private String value;
 
+	public List<KeyValue> parsedValue() {
+		List<KeyValue> list = new ArrayList<KeyValue>();
+		switch (type) {
+		case Commandline:
+			// detected cmd ... do safety skip
+			list.add(KeyValue.builder().key(type.name()).value(value).build());
+			break;
+
+		case Download:
+			// doing parsing
+			Pattern p = Pattern.compile("(\\$)(\\w+)" + Pattern.quote("(") + "(.+?)" + Pattern.quote(")"));
+			Matcher m = p.matcher(value);
+
+			while (m.find()) {
+				list.add(KeyValue.builder().key(m.group(2)).value(m.group(3)).build());
+			}
+			break;
+
+		default:
+			break;
+		}
+
+		return list;
+	}
 }
