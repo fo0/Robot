@@ -12,7 +12,7 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 
 		addColumn("Type", "type");
 		addColumn("Description", "description");
-		addColumn("Value", "value");
+		// addColumn("Value", "value");
 
 		loadActionContextFromController();
 	}
