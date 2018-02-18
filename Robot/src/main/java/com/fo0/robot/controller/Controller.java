@@ -53,6 +53,7 @@ public class Controller {
 			ControllerChain.getChain().start();
 		}
 
+		// exiting if nogui and no cfg
 		if (config.nogui && (config.configFile == null || config.configFile.isEmpty())) {
 			Logger.info("detected cli mode, but no config - exiting now");
 			System.exit(0);

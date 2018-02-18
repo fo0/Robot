@@ -2,7 +2,6 @@ package com.fo0.robot.gui.main;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,17 +36,9 @@ public class MainGUI {
 	 * @wbp.parser.entryPoint
 	 */
 	public static void bootstrap() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					window = new MainGUI();
-					initialize();
-					MainGUI.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		window = new MainGUI();
+		initialize();
+		MainGUI.frame.setVisible(true);
 	}
 
 	/**
@@ -75,7 +66,7 @@ public class MainGUI {
 		JButton btnAdd = new JButton("ADD");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddChainItemWindow window = new AddChainItemWindow();
+				new AddChainItemWindow();
 			}
 		});
 
@@ -159,6 +150,7 @@ public class MainGUI {
 		actionTable.setModel(tableModel);
 		JScrollPane scrollPane = new JScrollPane(actionTable);
 		panelTable.add(scrollPane, "name_7985051461163");
+		MainGUI.refreshTable();
 	}
 
 	public static void addItem(ActionItem action) {
@@ -175,5 +167,9 @@ public class MainGUI {
 
 	public static BeanTableModelAction getTableModel() {
 		return tableModel;
+	}
+
+	public void refreshGUI() {
+		refreshTable();
 	}
 }

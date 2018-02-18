@@ -69,6 +69,11 @@ public class BeanTableModel<M> extends AbstractTableModel {
 	public M getRow(int row) {
 		return rows.get(row);
 	}
+	
+	public void clear() {
+		rows.clear();
+		fireTableDataChanged();
+	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		BeanColumn column = columns.get(columnIndex);

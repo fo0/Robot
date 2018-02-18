@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.fo0.robot.controller.Controller;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.Parser;
@@ -74,7 +75,7 @@ public class ActionContext {
 		try {
 			map.clear();
 		} catch (Exception e) {
-			map = new HashMap<>();
+			map = new TreeMap<Integer, ActionItem>();
 		}
 	}
 
@@ -104,6 +105,8 @@ public class ActionContext {
 			return;
 		}
 
+		clear();
+		
 		try {
 			setCurrent(ctx.getCurrent());
 			setEnd(ctx.getEnd());
@@ -116,6 +119,5 @@ public class ActionContext {
 			clear();
 			Logger.error("loading config-file failed, clear context");
 		}
-
 	}
 }

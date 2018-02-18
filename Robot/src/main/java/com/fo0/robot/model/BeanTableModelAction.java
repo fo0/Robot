@@ -39,15 +39,15 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 
 	public void loadActionContextFromController() {
 		try {
-			ControllerChain.getChain().getContext().clear();
+			clear();
 			ControllerChain.getChain().getContext().getMap().entrySet().stream().forEach(e -> {
+				Logger.info("adding action item: " + e.getValue().getType() + ", " + e.getValue().getDescription());
 				addRow(e.getValue());
 			});
 		} catch (Exception e2) {
 			Logger.error("failed to load items to table " + e2);
 			e2.printStackTrace();
 		}
-
 	}
 
 }
