@@ -5,75 +5,70 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.StreamHandler;
 
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.StringUtils;
 
 public class Commander {
 
-	public static List<String> execute(boolean waitForResult, boolean shell, String homedir, List<String> cmds) {
+	public static List<String> execute(boolean shell, String homedir, String cmds) {
 
-		// first argument for the script or executable
-
-		if (cmds.isEmpty()) {
+		if (cmds == null || cmds.isEmpty()) {
 			Logger.info("stopped cmd command is empty");
 			return null;
 		}
 
 		List<String> listOutput = new ArrayList<String>();
+		CommandLine cli = null;
+		DefaultExecutor executor = null;
 
-		List<String> cmd = new ArrayList<String>();
-		ProcessBuilder processBuilder = null;
-
-		String operatingSystem = System.getProperty("os.name");
-
-		if (operatingSystem.toLowerCase().contains("window")) {
+		switch (OSCheck.getOperatingSystemType()) {
+		case Windows:
+			cli = new CommandLine("cmd");
 			if (shell) {
-				cmd.add("cmd");
-				cmd.add("/c");
+				cli.addArgument("/c ");
 			}
+			break;
 
-			cmd.addAll(cmds);
-			processBuilder = new ProcessBuilder(cmd);
-
-		} else {
+		case Linux:
+			cli = new CommandLine("/bin/bash");
 			if (shell) {
-				cmd.add("/bin/bash");
-				cmd.add("-c");
+				cli.addArgument("-c");
 			}
+			break;
 
-			cmd.addAll(cmds);
-			processBuilder = new ProcessBuilder(cmd);
 		}
 
-		Logger.info("HomeDir: " + homedir + " => " + cmds);
+		cli.addArgument(cmds, false);
 
-		processBuilder.directory(new File(homedir));
-
-		processBuilder.redirectErrorStream(true);
+		Logger.info("HomeDir: " + homedir + " => " + StringUtils.join(cli.getArguments(), ","));
 
 		try {
-			Process process = processBuilder.start();
+			executor = new DefaultExecutor();
+			executor.execute(cli);
+			executor.setWorkingDirectory(new File(homedir));
+			executor.setStreamHandler(new PumpStreamHandler(new OutputStream() {
 
-			// stdout
-			if (waitForResult) {
-				InputStream stdout = process.getInputStream();
-				listOutput = Commander.getStringListFromStream(process.getInputStream());
-				stdout.close();
-			}
+				@Override
+				public void write(int b) throws IOException {
+					System.out.println((char) b);
+				}
+			}, new OutputStream() {
 
-			if (listOutput != null && !listOutput.isEmpty())
-				return listOutput;
-			else {
-				if (listOutput == null)
-					listOutput = new ArrayList<String>();
-				listOutput.add("ERROR");
-				return listOutput;
-			}
+				@Override
+				public void write(int b) throws IOException {
+					System.out.println((char) b);
+				}
+			}));
 
 		} catch (Exception e) {
-			Logger.error("failed commander in Cmd: " + cmd + " | " + e);
+			Logger.error("failed commander in Cmd: " + cli + " | " + e);
 		}
 		return null;
 

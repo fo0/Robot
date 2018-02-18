@@ -19,7 +19,7 @@ public class ConsoleWindow {
 	 */
 	public ConsoleWindow() {
 		initialize();
-		frame.setVisible(false);
+		frame.setVisible(true);
 	}
 
 	public void setVisible(boolean visible) {
@@ -44,12 +44,10 @@ public class ConsoleWindow {
 		console.setFont(new Font("Dialog", Font.BOLD, 14));
 		frame.getContentPane().add(console, "name_44863924045065");
 
-		new Thread(() -> {
-			ControllerChain.getChain().addCmdListener((ctx, e) -> {
-				appendToConsole(String.valueOf(e.getKey().getId()), e.getKey().getName(), e.getKey().getDescription(),
-						e.getValue().getData().getState().getCmd().name());
-			});
-		}).start();
+		ControllerChain.getChain().addCmdListener((ctx, e) -> {
+			appendToConsole(String.valueOf(e.getKey().getId()), e.getKey().getName(), e.getKey().getDescription(),
+					e.getValue().getData().getState().getCmd().name());
+		});
 	}
 
 	public void appendToConsole(String id, String name, String description, String state) {

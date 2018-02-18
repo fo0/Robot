@@ -22,6 +22,7 @@ public class ChainActions extends Chain<ActionContext> {
 	}
 
 	public void createChains() {
+		getChains().clear();
 		getContext().getMap().entrySet().stream().forEach(e -> {
 			addToChain(e.getValue().getType().name(), e.getValue().getDescription(),
 					ChainItem.<ActionContext>builder().command(ChainActionItem.builder().build()).build());
@@ -32,6 +33,7 @@ public class ChainActions extends Chain<ActionContext> {
 	public void start() {
 		createChains();
 		super.start();
+		getContext().reset();
 	}
 
 }

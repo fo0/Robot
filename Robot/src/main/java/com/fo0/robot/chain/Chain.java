@@ -35,6 +35,10 @@ public class Chain<T> {
 		this.context = context;
 	}
 
+	public Map<ChainID, ChainItem<T>> getChains() {
+		return chains;
+	}
+
 	public T getContext() {
 		return this.context;
 	}
@@ -56,8 +60,8 @@ public class Chain<T> {
 		chains.put(ChainID.builder().name(name).id(determineNextId()).build(), item);
 		return true;
 	}
-	
-	public boolean addToChain(String name, String description,ChainItem<T> item) {
+
+	public boolean addToChain(String name, String description, ChainItem<T> item) {
 		chains.put(ChainID.builder().name(name).description(description).id(determineNextId()).build(), item);
 		return true;
 	}
@@ -157,7 +161,8 @@ public class Chain<T> {
 					state = EState.Failed;
 					e.getValue().getData().getException().setCmd(e2);
 				} finally {
-					cmdListener.event(getContext(), e);
+					if (cmdListener != null)
+						cmdListener.event(getContext(), e);
 				}
 
 				Logger.debug("finished Chain: " + id + ", Item-ID: " + e.getKey().getId() + " [" + e.getKey().getName()

@@ -23,7 +23,6 @@ import com.fo0.robot.utils.CONSTANTS;
 public class MainGUI {
 
 	private static MainGUI window = null;
-	private static ConsoleWindow console = new ConsoleWindow();
 	private static JFrame frame;
 
 	private static BeanTableModelAction tableModel;
@@ -101,8 +100,8 @@ public class MainGUI {
 		JButton btnStart = new JButton("START");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				new ConsoleWindow();
 				ControllerChain.getChain().start();
-				console.setVisible(true);
 			}
 		});
 		btnStart.setBounds(0, 0, 98, 24);

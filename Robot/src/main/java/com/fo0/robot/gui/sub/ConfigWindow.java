@@ -34,6 +34,11 @@ public class ConfigWindow {
 		frame.setVisible(visible);
 	}
 
+	public void close() {
+		frame.setVisible(false);
+		frame.dispose();
+	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -59,6 +64,7 @@ public class ConfigWindow {
 
 					// save config to disk -> file
 					Parser.write(ControllerChain.getChain().getContext(), file);
+					close();
 				}
 			}
 		});
@@ -84,6 +90,7 @@ public class ConfigWindow {
 
 					ControllerChain.getChain().setContext(ctx);
 					MainGUI.getTableModel().loadActionContextFromController();
+					close();
 				}
 			}
 		});

@@ -51,6 +51,12 @@ public class ActionContext {
 		return entry;
 	}
 
+	public void reset() {
+		start = 0;
+		end = 0;
+		current = 0;
+	}
+
 	public int getCurrent() {
 		return current;
 	}
