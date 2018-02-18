@@ -29,3 +29,13 @@ For Help
       --[no]gui [-g] (a boolean; default: "true")
         simple gui
 
+# Start-Scripts
+
+## Linux
+
+    #!/bin/bash
+    java -jar Robot.jar
+    
+## Windows
+    @echo off
+    start javaw -jar Robot.jar
