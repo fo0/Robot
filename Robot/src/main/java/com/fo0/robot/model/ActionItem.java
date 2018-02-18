@@ -37,6 +37,8 @@ public class ActionItem {
 			list.add(KeyValue.builder().key(type.name()).value(value).build());
 			break;
 
+		case Zip:
+		case Unzip:
 		case Download:
 			// doing parsing
 			Pattern p = Pattern.compile("(\\$\\w+)" + Pattern.quote("(") + "(.+?)" + Pattern.quote(")"));

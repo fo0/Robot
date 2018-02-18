@@ -18,6 +18,7 @@ import com.fo0.robot.model.KeyValue;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Commander;
 import com.fo0.robot.utils.Logger;
+import com.fo0.robot.utils.ZipUtils;
 import com.google.common.collect.Lists;
 
 import lombok.Builder;
@@ -53,9 +54,6 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			path = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst().orElse(
 					KeyValue.builder().key(CONSTANTS.DESTINATION).value(FilenameUtils.getName(url.getValue())).build());
 
-			Logger.info("SRC: " + url.getValue());
-			Logger.info("DEST: " + path.getValue());
-
 			// create file
 			File file = new File(Paths.get(path.getValue()).toAbsolutePath().toString());
 
@@ -77,13 +75,19 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 					.orElse(KeyValue.builder().build());
 
-			Logger.info("SRC: " + zipSrc.getValue());
-			Logger.info("DEST: " + zipDest.getValue());
-
+			ZipUtils.zip(zipSrc.getValue(), zipDest.getValue());
 			break;
 
 		case Unzip:
+			List<KeyValue> unzipList = item.getValue().parsedValue();
+			KeyValue unzipSrc = null;
+			KeyValue unzipDst = null;
 
+			unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
+			unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+					.orElse(KeyValue.builder().build());
+
+			ZipUtils.unzip(unzipSrc.getValue(), unzipDst.getValue());
 			break;
 
 		default:

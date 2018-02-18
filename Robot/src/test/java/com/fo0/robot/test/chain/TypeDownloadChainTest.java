@@ -26,4 +26,18 @@ public class TypeDownloadChainTest {
 		Assert.assertEquals("ip.php", path.getValue());
 	}
 
+	@Test
+	public void zip() {
+		ActionItem item = ActionItem.builder().type(EActionType.Download)
+				.value("$SRC(http://fo0.me/ip.php) $DST(ip.php)").description("description example").build();
+		List<KeyValue> list = item.parsedValue();
+		KeyValue url = list.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
+		Assert.assertEquals(CONSTANTS.SOURCE, url.getKey());
+		Assert.assertEquals("http://fo0.me/ip.php", url.getValue());
+
+		KeyValue path = list.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst().orElse(null);
+		Assert.assertEquals(CONSTANTS.DESTINATION, path.getKey());
+		Assert.assertEquals("ip.php", path.getValue());
+	}
+
 }
