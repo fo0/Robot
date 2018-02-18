@@ -35,10 +35,21 @@ Options:
 
 ## Linux
 
+### Examples
+default
+
+
     #!/bin/bash
     java -jar Robot.jar
+
+Load Config-File on StartUp
+
+
+    #!/bin/bash
+    java -jar Robot.jar --config /your/path/to/robot_cfg.robot
     
 ## Windows
+default
 
     @echo off
-    start javaw -jar Robot.jar
+    start javaw -jar Robot.jar --config /your/path/to/robot_cfg.robot
