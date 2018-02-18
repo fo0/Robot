@@ -11,6 +11,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -18,11 +20,13 @@ import javax.swing.SwingUtilities;
 import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.gui.main.MainGUI;
 import com.fo0.robot.model.ActionItem;
+import javax.swing.JPanel;
+import java.awt.CardLayout;
 
 public class AddChainItemWindow {
 
 	private JFrame frame;
-	private JTextField txtAction;
+	private JTextArea txtAction;
 
 	private ActionItem item;
 	private JLabel lblIDValue;
@@ -61,7 +65,7 @@ public class AddChainItemWindow {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("ChainItem");
-		frame.setBounds(100, 100, 534, 242);
+		frame.setBounds(100, 100, 538, 309);
 
 		// center frame on screen
 		frame.setLocationRelativeTo(null);
@@ -75,13 +79,6 @@ public class AddChainItemWindow {
 		lblType.setFont(new Font("Dialog", Font.BOLD, 16));
 		lblType.setBounds(1, 55, 113, 29);
 		frame.getContentPane().add(lblType);
-
-		txtAction = new JTextField();
-		txtAction.setText(item.getValue());
-		txtAction.setColumns(10);
-		txtAction.setBounds(126, 133, 394, 29);
-
-		frame.getContentPane().add(txtAction);
 
 		JLabel lblAction = new JLabel("Action");
 		lblAction.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -108,12 +105,12 @@ public class AddChainItemWindow {
 			}
 		});
 
-		btnSave.setBounds(126, 171, 105, 29);
+		btnSave.setBounds(126, 241, 105, 29);
 		frame.getContentPane().add(btnSave);
 
 		btnDiscard = new JButton("Discard");
 		btnDiscard.setIcon(null);
-		btnDiscard.setBounds(237, 171, 105, 29);
+		btnDiscard.setBounds(237, 241, 105, 29);
 		frame.getContentPane().add(btnDiscard);
 
 		JLabel lblID = new JLabel("ID");
@@ -141,6 +138,19 @@ public class AddChainItemWindow {
 		txtDescription.setColumns(10);
 		txtDescription.setBounds(126, 96, 394, 29);
 		frame.getContentPane().add(txtDescription);
+
+		JPanel panelTxtArea = new JPanel();
+		panelTxtArea.setBounds(126, 133, 394, 96);
+		frame.getContentPane().add(panelTxtArea);
+		panelTxtArea.setLayout(new CardLayout(0, 0));
+
+		txtAction = new JTextArea();
+		txtAction.setWrapStyleWord(true);
+		txtAction.setLineWrap(true);
+		txtAction.setText(item.getValue());
+		txtAction.setColumns(10);
+		JScrollPane scrollPane = new JScrollPane(txtAction);
+		panelTxtArea.add(scrollPane, "name_7623088305357");
 
 		SwingUtilities.invokeLater(new Runnable() {
 
