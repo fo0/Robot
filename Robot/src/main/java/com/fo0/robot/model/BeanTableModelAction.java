@@ -18,6 +18,10 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 
 	@Override
 	public void addRow(ActionItem row) {
+		ActionItem tmpRow = getRow(row);
+		if (tmpRow != null) {
+			removeRow(row);
+		}
 		super.addRow(row);
 		ControllerChain.getChain().addActionItem(row);
 	}
@@ -26,6 +30,10 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 	public void removeRow(ActionItem row) {
 		super.removeRow(row);
 		ControllerChain.getChain().removeActionItem(row);
+	}
+
+	public ActionItem getRow(ActionItem item) {
+		return super.getRow(item);
 	}
 
 	public void loadActionContextFromController() {

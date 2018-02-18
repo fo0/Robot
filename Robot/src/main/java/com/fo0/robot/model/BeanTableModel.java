@@ -43,6 +43,10 @@ public class BeanTableModel<M> extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 
+	public M getRow(M row) {
+		return rows.stream().filter(e -> e.equals(row)).findFirst().orElse(null);
+	}
+
 	public void removeRow(M row) {
 		rows.remove(row);
 		fireTableDataChanged();

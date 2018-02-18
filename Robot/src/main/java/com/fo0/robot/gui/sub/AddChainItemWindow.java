@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -17,7 +18,6 @@ import javax.swing.SwingUtilities;
 import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.gui.main.MainGUI;
 import com.fo0.robot.model.ActionItem;
-import javax.swing.ImageIcon;
 
 public class AddChainItemWindow {
 
@@ -32,18 +32,18 @@ public class AddChainItemWindow {
 	private JLabel lblDescription;
 	private JTextField txtDescription;
 
-	// /**
-	// * Create the application.
-	// */
-	// public AddChainItemWindow(ActionItem item) {
-	// if (item == null)
-	// item = ActionItem.builder().build();
-	// else
-	// this.item = item;
-	//
-	// initialize();
-	// frame.setVisible(true);
-	// }
+	/**
+	 * Create the application.
+	 */
+	public AddChainItemWindow(ActionItem item) {
+		if (item == null)
+			item = ActionItem.builder().build();
+		else
+			this.item = item;
+
+		initialize();
+		frame.setVisible(true);
+	}
 
 	/**
 	 * Create the application.

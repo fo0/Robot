@@ -2,8 +2,6 @@ package com.fo0.robot.controller;
 
 import java.io.File;
 
-import javax.xml.stream.events.StartDocument;
-
 import com.fo0.robot.config.Config;
 import com.fo0.robot.config.ConfigParser;
 import com.fo0.robot.controller.chain.ActionContext;

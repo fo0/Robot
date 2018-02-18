@@ -30,7 +30,7 @@ public class Parser {
 			}
 
 		try (Writer writer = new OutputStreamWriter(new FileOutputStream(destFile), "UTF-8")) {
-			Gson gson = new GsonBuilder().create();
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			gson.toJson(obj, writer);
 			writer.close();
 		} catch (IOException e) {
