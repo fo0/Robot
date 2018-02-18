@@ -17,8 +17,15 @@ Depends:
   
   
 # Config
+For Help
 
-Options category 'gui':
+    java -jar Robot.jar --help
 
-    --[no]gui [-g] (a boolean; default: "true")
-      simple gui
+    Options category 'config':
+      --cfg [-c] (a string; default: "")
+        read config
+
+    Options category 'gui':
+      --[no]gui [-g] (a boolean; default: "true")
+        simple gui
+
