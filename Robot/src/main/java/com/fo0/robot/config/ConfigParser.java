@@ -8,7 +8,7 @@ public class ConfigParser {
 
 	public static Config parseConfig(String[] args) {
 		OptionsParser parser = OptionsParser.newOptionsParser(Config.class);
-		//		printUsage(parser);
+		// printUsage(parser);
 		parser.parseAndExitUponError(args);
 		return parser.getOptions(Config.class);
 	}
