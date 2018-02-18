@@ -38,7 +38,7 @@ public class Parser {
 		}
 	}
 
-	public static <T> T parse(File file, Class<T> clazz) {
+	public static <T> T load(File file, Class<T> clazz) {
 		if (file == null || !file.exists())
 			return null;
 
@@ -48,7 +48,7 @@ public class Parser {
 
 			fis = new FileInputStream(file);
 
-			T obj = new Gson().fromJson(new InputStreamReader(fis, "UTF-8"),
+			T obj = new GsonBuilder().setPrettyPrinting().create().fromJson(new InputStreamReader(fis, "UTF-8"),
 					TypeToken.getParameterized(clazz).getType());
 
 			if (obj == null)

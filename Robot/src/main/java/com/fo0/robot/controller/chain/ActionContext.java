@@ -26,7 +26,14 @@ public class ActionContext {
 		return map.put(id, item);
 	}
 
-	public SimpleEntry<Integer, ActionItem> push(ActionItem item) {
+	public Entry<Integer, ActionItem> push(ActionItem item) {
+		Entry<Integer, ActionItem> tmpItem = map.entrySet().stream().filter(e -> e.getValue().equals(item)).findFirst()
+				.orElse(null);
+
+		if (tmpItem != null) {
+			return tmpItem;
+		}
+
 		int id = determineNextId();
 		map.put(id, item);
 		return new SimpleEntry<Integer, ActionItem>(id, item);
@@ -36,19 +43,20 @@ public class ActionContext {
 		Entry<Integer, ActionItem> foundItem = map.entrySet().stream()
 				.filter(e -> e.getValue().getId().equals(item.getId())).findFirst().orElse(null);
 		map.remove(foundItem.getKey());
+		end = map.size();
 	}
 
-	public SimpleEntry<Integer, ActionItem> pop() {
+	public Entry<Integer, ActionItem> pop() {
 		ActionItem latest = map.get(current);
 		SimpleEntry<Integer, ActionItem> entry = new SimpleEntry<Integer, ActionItem>(current, latest);
 		current++;
+		end = map.size();
 		return entry;
 	}
 
-	public SimpleEntry<Integer, ActionItem> peek() {
+	public Entry<Integer, ActionItem> peek() {
 		ActionItem latest = map.get(current);
-		SimpleEntry<Integer, ActionItem> entry = new SimpleEntry<Integer, ActionItem>(current, latest);
-		return entry;
+		return new SimpleEntry<Integer, ActionItem>(current, latest);
 	}
 
 	public void reset() {

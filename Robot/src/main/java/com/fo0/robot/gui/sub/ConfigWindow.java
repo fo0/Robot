@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -14,6 +15,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import com.fo0.robot.controller.ControllerChain;
 import com.fo0.robot.controller.chain.ActionContext;
 import com.fo0.robot.gui.main.MainGUI;
+import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.Parser;
 import com.google.gson.Gson;
 
@@ -61,6 +63,12 @@ public class ConfigWindow {
 				int returnVal = chooser.showSaveDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = chooser.getSelectedFile();
+					if (!file.getName().endsWith(".robot")) {
+						Logger.info("detected missing file extension, appending .robot to file");
+						File tmpFile = new File(file.getAbsolutePath() + ".robot");
+						file.renameTo(tmpFile);
+						file = tmpFile;
+					}
 
 					// save config to disk -> file
 					Parser.write(ControllerChain.getChain().getContext(), file);
@@ -83,7 +91,7 @@ public class ConfigWindow {
 					File file = chooser.getSelectedFile();
 
 					// load config from disk -> file
-					ActionContext ctx = Parser.parse(file, ActionContext.class);
+					ActionContext ctx = Parser.load(file, ActionContext.class);
 
 					if (ctx == null)
 						return;

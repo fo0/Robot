@@ -1,6 +1,7 @@
 package com.fo0.robot.model;
 
 import com.fo0.robot.controller.ControllerChain;
+import com.fo0.robot.utils.Logger;
 
 public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 
@@ -37,9 +38,15 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 	}
 
 	public void loadActionContextFromController() {
-		ControllerChain.getChain().getContext().getMap().entrySet().stream().forEach(e -> {
-			addRow(e.getValue());
-		});
+		try {
+			ControllerChain.getChain().getContext().getMap().entrySet().stream().forEach(e -> {
+				addRow(e.getValue());
+			});
+		} catch (Exception e2) {
+			Logger.error("failed to load items to table " + e2);
+			e2.printStackTrace();
+		}
+
 	}
 
 }

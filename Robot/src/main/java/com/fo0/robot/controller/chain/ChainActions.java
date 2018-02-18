@@ -1,6 +1,6 @@
 package com.fo0.robot.controller.chain;
 
-import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 
 import com.fo0.robot.chain.Chain;
 import com.fo0.robot.chain.ChainItem;
@@ -10,10 +10,9 @@ public class ChainActions extends Chain<ActionContext> {
 
 	public ChainActions() {
 		super("Chain Actions", ActionContext.builder().build());
-
 	}
 
-	public SimpleEntry<Integer, ActionItem> addActionItem(ActionItem item) {
+	public Entry<Integer, ActionItem> addActionItem(ActionItem item) {
 		return getContext().push(item);
 	}
 

@@ -44,9 +44,13 @@ public class Controller {
 
 	private static void applyConfig() {
 		if (config.configFile != null && !config.configFile.isEmpty()) {
-			Logger.info("loading configfile: " + config.configFile);
-			ControllerChain.getChain().setContext(Parser.parse(new File(config.configFile), ActionContext.class));
+			ActionContext ctx = Parser.load(new File(config.configFile), ActionContext.class);
+			Logger.info("loading configfile: " + config.configFile + ", Success: " + (ctx != null ? "true" : "false"));
+			if (ctx != null)
+				ControllerChain.getChain().setContext(ctx);
+
 		}
+
 		if (config.gui == true) {
 			MainGUI.bootstrap();
 		}

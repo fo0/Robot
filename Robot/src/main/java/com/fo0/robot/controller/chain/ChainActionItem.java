@@ -1,6 +1,6 @@
 package com.fo0.robot.controller.chain;
 
-import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 
 import com.fo0.robot.chain.ChainCommand;
 import com.fo0.robot.chain.EChainResponse;
@@ -16,7 +16,7 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 	@Override
 	public EChainResponse command(ActionContext ctx) throws Exception {
 		// get latest action
-		SimpleEntry<Integer, ActionItem> item = ctx.pop();
+		Entry<Integer, ActionItem> item = ctx.pop();
 
 		// info
 		Logger.info("popped action: " + item.getKey() + ", " + item.getValue());
