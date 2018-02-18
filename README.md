@@ -7,9 +7,6 @@ You can load and save your actions via configs to persist your work.
 # Demo
 ![Demo-GUI](https://github.com/fo0/Robot/blob/master/Robot/files/demo-gui.gif)
 
-![Demo-CLI](https://github.com/fo0/Robot/blob/master/Robot/files/demo-cli.gif)
-
-
 # Environment
 Works on:
   - Windows
