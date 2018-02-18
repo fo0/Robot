@@ -5,7 +5,7 @@ You can load and save your actions via configs to persist your work.
 
 
 # Demo
-![Demo] (https://github.com/fo0/Robot/blob/master/Robot/files/2018-02-18_13-45-04.gif)
+![Demo](https://github.com/fo0/Robot/blob/master/Robot/files/2018-02-18_13-45-04.gif)
 
 
 # Environment
