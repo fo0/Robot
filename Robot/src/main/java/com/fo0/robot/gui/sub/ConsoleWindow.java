@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 import com.fo0.robot.controller.ControllerChain;
+import com.fo0.robot.utils.UpdateUtils;
 
 public class ConsoleWindow {
 

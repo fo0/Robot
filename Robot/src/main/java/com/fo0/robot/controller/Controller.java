@@ -5,13 +5,17 @@ import com.fo0.robot.config.ConfigParser;
 import com.fo0.robot.gui.main.MainGUI;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Logger;
+import com.fo0.robot.utils.UpdateUtils;
 
 public class Controller {
 
+	public static String[] arg;
 	private static Config config = null;
 	private static MainGUI gui = null;
 
 	public static void bootstrap(String[] args) {
+		arg = args;
+
 		// parse args for config
 		config = ConfigParser.parseConfig(args);
 
