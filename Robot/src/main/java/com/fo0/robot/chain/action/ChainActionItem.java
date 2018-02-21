@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fo0.robot.chain.ChainCommand;
 import com.fo0.robot.chain.EChainResponse;
+import com.fo0.robot.listener.DispatchListener;
+import com.fo0.robot.listener.ValueChangeListener;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.KeyValue;
 import com.fo0.robot.utils.CONSTANTS;
@@ -36,7 +38,10 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 		switch (item.getValue().getType()) {
 		case Commandline:
-			Commander commander = new Commander();
+			Commander commander = new Commander(log -> {
+				ctx.addToLog(log);
+			});
+
 			commander.execute(true, System.getProperty("user.dir"), item.getValue().getValue());
 
 			if (commander == null || commander.isError()) {
@@ -54,6 +59,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			path = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst().orElse(
 					KeyValue.builder().key(CONSTANTS.DESTINATION).value(FilenameUtils.getName(url.getValue())).build());
 
+			ctx.addToLog("SRC: " + url);
+			ctx.addToLog("DST: " + path);
+
 			// create file
 			File file = new File(Paths.get(path.getValue()).toAbsolutePath().toString());
 
@@ -64,6 +72,7 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			file.createNewFile();
 
 			FileUtils.copyInputStreamToFile(new URL(url.getValue()).openStream(), file);
+			ctx.addToLog("Finished Download: Success");
 			break;
 
 		case Zip:

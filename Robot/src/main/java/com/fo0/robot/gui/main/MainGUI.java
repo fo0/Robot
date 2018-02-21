@@ -2,6 +2,7 @@ package com.fo0.robot.gui.main;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,12 +19,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.fo0.robot.controller.ControllerChain;
 import com.fo0.robot.gui.sub.AddChainItemWindow;
 import com.fo0.robot.gui.sub.UpdateWindow;
-import com.fo0.robot.gui.sub.ConsoleWindow;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.BeanTableModelAction;
 import com.fo0.robot.utils.CONSTANTS;
@@ -36,6 +37,9 @@ public class MainGUI {
 
 	private static BeanTableModelAction tableModel;
 	private static JTable actionTable;
+	private static EMode currentMode = EMode.Normal;
+	private static JTextArea areaChain;
+	private static JTextArea areaConsole;
 
 	/**
 	 * Launch the application.
@@ -48,6 +52,20 @@ public class MainGUI {
 		MainGUI.frame.setVisible(true);
 	}
 
+	public static void toggleConsole(EMode mode) {
+		currentMode = mode;
+
+		switch (mode) {
+		case Normal:
+			frame.setSize(655, 339);
+			break;
+
+		case Console:
+			frame.setSize(655, 528);
+			break;
+		}
+	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -57,16 +75,18 @@ public class MainGUI {
 		frame.setTitle("Robot v" + CONSTANTS.VERSION);
 		frame.getContentPane().setLayout(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(100, 100, 512, 339);
 
 		// center frame on screen
+		frame.setSize(655, 528);
 		frame.setLocationRelativeTo(null);
 		frame.getContentPane().setBackground(Color.LIGHT_GRAY);
 		frame.setBackground(Color.LIGHT_GRAY);
 		frame.setResizable(false);
 
+		toggleConsole(currentMode);
+
 		JPanel panelTop = new JPanel();
-		panelTop.setBounds(0, 0, 514, 25);
+		panelTop.setBounds(0, 0, 653, 25);
 		frame.getContentPane().add(panelTop);
 		panelTop.setLayout(null);
 
@@ -87,29 +107,34 @@ public class MainGUI {
 				tableModel.removeRow(tableModel.getRow(col));
 			}
 		});
-		btnDel.setBounds(345, 0, 73, 24);
+		btnDel.setBounds(169, 0, 73, 24);
 		panelTop.add(btnDel);
-
-		JButton btnUp = new JButton("UP");
-		btnUp.setBounds(182, 0, 73, 24);
-		panelTop.add(btnUp);
-
-		JButton btnDown = new JButton("DOWN");
-		btnDown.setBounds(254, 0, 79, 24);
-		panelTop.add(btnDown);
 
 		JButton btnStart = new JButton("START");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ConsoleWindow();
+				toggleConsole(EMode.Console);
 				ControllerChain.getChain().start();
 			}
 		});
 		btnStart.setBounds(0, 0, 98, 24);
 		panelTop.add(btnStart);
 
+		JButton buttonToggleConsole = new JButton(">_");
+		buttonToggleConsole.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (currentMode == EMode.Console) {
+					toggleConsole(EMode.Normal);
+				} else {
+					toggleConsole(EMode.Console);
+				}
+			}
+		});
+		buttonToggleConsole.setBounds(580, 0, 73, 24);
+		panelTop.add(buttonToggleConsole);
+
 		JPanel panelTable = new JPanel();
-		panelTable.setBounds(0, 26, 514, 265);
+		panelTable.setBounds(0, 26, 653, 265);
 		frame.getContentPane().add(panelTable);
 
 		panelTable.setLayout(new CardLayout(0, 0));
@@ -123,7 +148,6 @@ public class MainGUI {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					System.out.println("doubleclick");
 					JTable table = (JTable) e.getSource();
 					Point point = e.getPoint();
 					int row = table.rowAtPoint(point);
@@ -146,8 +170,41 @@ public class MainGUI {
 		});
 		tableModel = new BeanTableModelAction();
 		actionTable.setModel(tableModel);
-		JScrollPane scrollPane = new JScrollPane(actionTable);
-		panelTable.add(scrollPane, "name_7985051461163");
+		JScrollPane scrollPaneTable = new JScrollPane(actionTable);
+		panelTable.add(scrollPaneTable, "name_7985051461163");
+
+		JPanel panelChain = new JPanel();
+		panelChain.setBounds(0, 292, 248, 188);
+		frame.getContentPane().add(panelChain);
+		panelChain.setLayout(new CardLayout(0, 0));
+
+		areaChain = new JTextArea();
+		areaChain.setEditable(false);
+		JScrollPane scrollPaneChain = new JScrollPane(areaChain);
+		panelChain.add(scrollPaneChain, "name_1466312782685");
+
+		JPanel panelConsole = new JPanel();
+		panelConsole.setBounds(248, 292, 405, 188);
+		frame.getContentPane().add(panelConsole);
+		panelConsole.setLayout(new CardLayout(0, 0));
+
+		JScrollPane scrollPaneConsole = new JScrollPane((Component) null);
+		panelConsole.add(scrollPaneConsole, "name_2349855873542");
+
+		areaConsole = new JTextArea();
+		areaConsole.setEditable(false);
+		scrollPaneConsole.setViewportView(areaConsole);
+
+		// adding listener to receive events from backend
+		ControllerChain.getChain().addCmdListener((ctx, e) -> {
+			appendToChain(String.valueOf(e.getKey().getId()), e.getKey().getName(), e.getKey().getDescription(),
+					e.getValue().getData().getState().getCmd().name());
+		});
+
+		// add listener for: Console output log
+		ControllerChain.getChain().getContext().addOutputListener(cli -> {
+			appendToConsole(cli);
+		});
 
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -235,5 +292,31 @@ public class MainGUI {
 
 	public void refreshGUI() {
 		refreshTable();
+	}
+
+	enum EMode {
+		Normal, Console
+	}
+
+	public static void appendToConsole(String id, String name, String description, String state) {
+		appendToConsole(String.format("ID: %s [%s]\n   Type: %s\n   Description: %s\n", id, state, name, description));
+	}
+
+	public static void appendToConsole(String text) {
+		areaConsole.setEditable(true);
+		areaConsole.append(text);
+		areaConsole.setEditable(false);
+		areaConsole.validate();
+	}
+
+	public static void appendToChain(String id, String name, String description, String state) {
+		appendToChain(String.format("ID: %s [%s]\n   Type: %s\n   Description: %s\n", id, state, name, description));
+	}
+
+	public static void appendToChain(String text) {
+		areaChain.setEditable(true);
+		areaChain.append(text + "\n");
+		areaChain.setEditable(false);
+		areaChain.validate();
 	}
 }

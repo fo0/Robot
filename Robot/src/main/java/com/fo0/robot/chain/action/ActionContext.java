@@ -2,12 +2,12 @@ package com.fo0.robot.chain.action;
 
 import java.io.File;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import com.fo0.robot.controller.Controller;
+import com.fo0.robot.listener.DispatchListener;
+import com.fo0.robot.listener.ValueChangeListener;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.Parser;
@@ -26,6 +26,16 @@ public class ActionContext {
 
 	@Builder.Default
 	private Map<Integer, ActionItem> map = new TreeMap<Integer, ActionItem>();
+
+	/*
+	 * pre initialize to dispatch/route the input to output from cli
+	 */
+	@Builder.Default
+	private transient DispatchListener inputListener = e -> {
+		return e;
+	};
+
+	private transient ValueChangeListener outputListener;
 
 	public ActionItem push(int id, ActionItem item) {
 		return map.put(id, item);
@@ -92,6 +102,17 @@ public class ActionContext {
 		}
 	}
 
+	public void addOutputListener(ValueChangeListener listener) {
+		this.outputListener = listener;
+	}
+
+	public void addToLog(String log) {
+		Logger.debug("Action Log: " + log);
+		if (outputListener != null) {
+			outputListener.event(inputListener.event(log));
+		}
+	}
+
 	public void save(String path) {
 		Logger.info("saving config-file: " + path);
 		Parser.write(this, new File(path));
@@ -106,7 +127,7 @@ public class ActionContext {
 		}
 
 		clear();
-		
+
 		try {
 			setCurrent(ctx.getCurrent());
 			setEnd(ctx.getEnd());
