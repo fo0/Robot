@@ -20,10 +20,10 @@ import lombok.Data;
 @Builder
 public class ActionContext {
 
-	private int start = 0;
-	private int end = 0;
+	private transient int start = 0;
+	private transient int end = 0;
 
-	private int current = 0;
+	private transient int current = 0;
 
 	@Builder.Default
 	private Map<Integer, ActionItem> map = new TreeMap<Integer, ActionItem>();
