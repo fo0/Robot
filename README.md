@@ -9,7 +9,7 @@ You can load and save your actions via configs to persist your work.
 
 # Environment
 Works on:
-  - Windows
+  - Windows [Untest]
   - Linux
   
 Depends:
