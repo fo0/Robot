@@ -52,7 +52,7 @@ public class Commander {
 
 		cli.addArgument(cmds, false);
 
-		Logger.info("HomeDir: " + homedir + " => " + StringUtils.join(cli.getArguments(), ","));
+		Logger.debug("HomeDir: " + homedir + " => " + StringUtils.join(cli.getArguments(), ","));
 
 		try {
 			executor = new DefaultExecutor();

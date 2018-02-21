@@ -1,5 +1,7 @@
 package com.fo0.robot.utils;
 
+import com.fo0.robot.controller.Controller;
+
 /**
  * TODO: Add java.utils.logging or log4j as logger
  * 
@@ -17,6 +19,7 @@ public class Logger {
 	}
 
 	public static void debug(String message) {
-		System.out.println("[DEBUG] " + message);
+		if (Controller.getConfig() != null && Controller.getConfig().debug)
+			System.out.println("[DEBUG] " + message);
 	}
 }

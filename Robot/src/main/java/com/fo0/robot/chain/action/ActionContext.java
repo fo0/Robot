@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.listener.DispatchListener;
 import com.fo0.robot.listener.ValueChangeListener;
 import com.fo0.robot.model.ActionItem;
@@ -106,10 +107,30 @@ public class ActionContext {
 		this.outputListener = listener;
 	}
 
+	/**
+	 * without line feeed
+	 * 
+	 * @param type
+	 * @param log
+	 */
 	public void addToLog(String log) {
 		Logger.debug("Action Log: " + log);
 		if (outputListener != null) {
 			outputListener.event(inputListener.event(log));
+		}
+	}
+
+	/**
+	 * with line feeed
+	 * 
+	 * @param type
+	 * @param log
+	 */
+	public void addToLog(EActionType type, String log) {
+		String msg = "[Action|" + type + "] " + log;
+		Logger.debug(msg);
+		if (outputListener != null) {
+			outputListener.event(inputListener.event(msg + "\n"));
 		}
 	}
 

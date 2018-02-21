@@ -65,4 +65,8 @@ public class Controller {
 
 	}
 
+	public static Config getConfig() {
+		return config;
+	}
+
 }

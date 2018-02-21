@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fo0.robot.chain.ChainCommand;
 import com.fo0.robot.chain.EChainResponse;
+import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.listener.DispatchListener;
 import com.fo0.robot.listener.ValueChangeListener;
 import com.fo0.robot.model.ActionItem;
@@ -35,8 +36,8 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 		// info
 		Logger.info("popped action: " + item.getKey() + ", " + item.getValue());
-
-		switch (item.getValue().getType()) {
+		EActionType type = item.getValue().getType();
+		switch (type) {
 		case Commandline:
 			Commander commander = new Commander(log -> {
 				ctx.addToLog(log);
@@ -45,7 +46,7 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			commander.execute(true, System.getProperty("user.dir"), item.getValue().getValue());
 
 			if (commander == null || commander.isError()) {
-				Logger.error("found errors in commander: " + item.getKey());
+				ctx.addToLog(type, "error at commander: " + item.getKey());
 				return EChainResponse.Failed;
 			}
 			break;
@@ -59,8 +60,8 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			path = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst().orElse(
 					KeyValue.builder().key(CONSTANTS.DESTINATION).value(FilenameUtils.getName(url.getValue())).build());
 
-			ctx.addToLog("SRC: " + url);
-			ctx.addToLog("DST: " + path);
+			ctx.addToLog(type, "SRC: " + url);
+			ctx.addToLog(type, "DST: " + path);
 
 			// create file
 			File file = new File(Paths.get(path.getValue()).toAbsolutePath().toString());
@@ -84,6 +85,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 					.orElse(KeyValue.builder().build());
 
+			ctx.addToLog(type, "SRC: " + zipSrc);
+			ctx.addToLog(type, "DST: " + zipDest);
+
 			ZipUtils.zip(zipSrc.getValue(), zipDest.getValue());
 			break;
 
@@ -95,6 +99,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
 			unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 					.orElse(KeyValue.builder().build());
+
+			ctx.addToLog(type, "SRC: " + unzipSrc);
+			ctx.addToLog(type, "DST: " + unzipDst);
 
 			ZipUtils.unzip(unzipSrc.getValue(), unzipDst.getValue());
 			break;
