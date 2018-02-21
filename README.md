@@ -35,6 +35,10 @@ Options:
       --[no]nogui [-n] (a boolean; default: "false")
         Graphical User Interface
 
+    Options category 'Verbose':
+      --[no]verbose [-v] (a boolean; default: "false")
+        Debug Log Level
+
 # Start-Scripts
 
 ## Linux
