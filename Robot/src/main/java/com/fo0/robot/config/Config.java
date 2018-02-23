@@ -13,4 +13,7 @@ public class Config extends OptionsBase {
 
 	@Option(name = "verbose", abbrev = 'v', category = "Verbose", help = "Debug Log Level", defaultValue = "false")
 	public boolean debug;
+
+	@Option(name = "ignoreErrors", abbrev = 'i', category = "Errors", help = "Ignore Errors in Chain", defaultValue = "false")
+	public boolean ignoreErrors;
 }

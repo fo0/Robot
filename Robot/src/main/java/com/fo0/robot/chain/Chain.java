@@ -15,6 +15,8 @@ public class Chain<T> {
 	private EState state = EState.Stopped;
 	private T context;
 
+	private boolean failOnError = true;
+
 	private Map<ChainID, ChainItem<T>> chains = new TreeMap<ChainID, ChainItem<T>>();
 
 	private ChainCmdListener<T> cmdListener = null;
@@ -128,7 +130,8 @@ public class Chain<T> {
 						+ "]" + " Pre: " + e.getValue().getData().getState().getPre());
 			}
 
-			if (e.getValue().getPostCommand() != null && e.getValue().getData().getState().getState().code() > 0) {
+			if (!failOnError | (e.getValue().getPostCommand() != null
+					&& e.getValue().getData().getState().getState().code() > 0)) {
 				// after,post
 				e.getValue().getData().getState().setPost(EChainResponse.Set);
 				try {
@@ -152,7 +155,8 @@ public class Chain<T> {
 						+ "]" + " Post: " + e.getValue().getData().getState().getPost());
 			}
 
-			if (e.getValue().getCommand() != null && e.getValue().getData().getState().getState().code() > 0) {
+			if (!failOnError
+					| (e.getValue().getCommand() != null && e.getValue().getData().getState().getState().code() > 0)) {
 				e.getValue().getData().getState().setCmd(EChainResponse.Set);
 				try {
 					e.getValue().getData().getState().setCmd(e.getValue().getCommand().command(context));
@@ -178,29 +182,32 @@ public class Chain<T> {
 						+ "]" + " Post: " + e.getValue().getData().getState().getCmd());
 			}
 
-			if (e.getValue().getData().getState().getState() == EState.Failed) {
-				Logger.error("failed to execute chain chunk, stopping chain: " + id + ", state: "
-						+ e.getValue().getData().getState() + ", Exception: " + e.getValue().getData().getException());
-				e.getValue().getData().getState().setState(EState.Failed);
-				state = EState.Failed;
-				setAllStatesAfterChunkTo(e.getKey(), EState.Stopped);
-				try {
-					e.getValue().getError().error(context, e.getValue().getData().getException());
-				} catch (Exception e3) {
-					Logger.debug("failed to exec main exec chain of: " + id + ", " + e3);
+			if (failOnError)
+				if (e.getValue().getData().getState().getState() == EState.Failed) {
+					Logger.error("failed to execute chain chunk, stopping chain: " + id + ", state: "
+							+ e.getValue().getData().getState() + ", Exception: "
+							+ e.getValue().getData().getException());
+					e.getValue().getData().getState().setState(EState.Failed);
+					state = EState.Failed;
+					setAllStatesAfterChunkTo(e.getKey(), EState.Stopped);
+					try {
+						e.getValue().getError().error(context, e.getValue().getData().getException());
+					} catch (Exception e3) {
+						Logger.debug("failed to exec main exec chain of: " + id + ", " + e3);
+					}
+
+					break;
 				}
 
-				break;
-			}
-
-			if (e.getValue().getData().getState().getPre().code() < 0
-					| e.getValue().getData().getState().getPost().code() < 0
-					| e.getValue().getData().getState().getCmd().code() < 0) {
-				Logger.info("stopped chain: " + e.getValue().getData().getState());
-				e.getValue().getData().getState().setState(EState.Stopped);
-				setAllStatesAfterChunkTo(e.getKey(), EState.Stopped);
-				break;
-			}
+			if (failOnError)
+				if (e.getValue().getData().getState().getPre().code() < 0
+						| e.getValue().getData().getState().getPost().code() < 0
+						| e.getValue().getData().getState().getCmd().code() < 0) {
+					Logger.info("stopped chain: " + e.getValue().getData().getState());
+					e.getValue().getData().getState().setState(EState.Stopped);
+					setAllStatesAfterChunkTo(e.getKey(), EState.Stopped);
+					break;
+				}
 
 			e.getValue().getData().getState().setState(EState.Success);
 		}
@@ -215,6 +222,10 @@ public class Chain<T> {
 
 	public EState getState() {
 		return state;
+	}
+
+	public void setFailOnError(boolean failOnError) {
+		this.failOnError = failOnError;
 	}
 
 	private void setAllStatesAfterChunkTo(ChainID chunk, EState state) {

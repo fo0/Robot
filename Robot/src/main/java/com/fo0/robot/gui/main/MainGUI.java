@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -20,8 +21,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.fo0.robot.controller.Controller;
 import com.fo0.robot.controller.ControllerChain;
 import com.fo0.robot.gui.sub.AddChainItemWindow;
 import com.fo0.robot.gui.sub.UpdateWindow;
@@ -29,6 +32,7 @@ import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.BeanTableModelAction;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Logger;
+import com.fo0.robot.utils.Utils;
 
 public class MainGUI {
 
@@ -112,9 +116,35 @@ public class MainGUI {
 
 		JButton btnStart = new JButton("START");
 		btnStart.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				toggleConsole(EMode.Console);
-				ControllerChain.getChain().start();
+			public void actionPerformed(ActionEvent a) {
+				new Thread(() -> {
+					SwingUtilities.invokeLater(() -> {
+						areaConsole.setText("");
+						areaChain.setText("");
+					});
+
+					SwingUtilities.invokeLater(() -> {
+						toggleConsole(EMode.Console);
+					});
+
+					Utils.sleep(TimeUnit.MILLISECONDS, 200);
+
+					// adding listener to receive events from backend
+					ControllerChain.getChain().addCmdListener((ctx, e) -> {
+						appendToChain(String.valueOf(e.getKey().getId()), e.getKey().getName(),
+								e.getKey().getDescription(), e.getValue().getData().getState().getCmd().name());
+					});
+
+					// add listener for: Console output log
+					ControllerChain.getChain().getContext().addOutputListener(cli -> {
+						appendToConsole(cli);
+					});
+
+					Utils.sleep(TimeUnit.SECONDS, 1);
+
+					ControllerChain.getChain().start();
+				}).start();
+
 			}
 		});
 		btnStart.setBounds(0, 0, 98, 24);
@@ -132,6 +162,26 @@ public class MainGUI {
 		});
 		buttonToggleConsole.setBounds(580, 0, 73, 24);
 		panelTop.add(buttonToggleConsole);
+
+		ErrorMode errMode = ErrorMode.FailOnErr;
+		if (Controller.getConfig().ignoreErrors)
+			errMode = ErrorMode.NotFailOnErr;
+
+		JButton btnTgleErrors = new JButton(errMode.name());
+		btnTgleErrors.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (btnTgleErrors.getText().equals(ErrorMode.FailOnErr.name())) {
+					Controller.getConfig().ignoreErrors = true;
+					btnTgleErrors.setText(ErrorMode.NotFailOnErr.name());
+				} else {
+					Controller.getConfig().ignoreErrors = false;
+					btnTgleErrors.setText(ErrorMode.FailOnErr.name());
+				}
+
+			}
+		});
+		btnTgleErrors.setBounds(453, 0, 105, 24);
+		panelTop.add(btnTgleErrors);
 
 		JPanel panelTable = new JPanel();
 		panelTable.setBounds(0, 26, 653, 265);
@@ -181,6 +231,9 @@ public class MainGUI {
 		areaChain = new JTextArea();
 		areaChain.setEditable(false);
 		JScrollPane scrollPaneChain = new JScrollPane(areaChain);
+		// scrollPaneChain.getVerticalScrollBar().addAdjustmentListener(e -> {
+		// e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+		// });
 		panelChain.add(scrollPaneChain, "name_1466312782685");
 
 		JPanel panelConsole = new JPanel();
@@ -189,22 +242,14 @@ public class MainGUI {
 		panelConsole.setLayout(new CardLayout(0, 0));
 
 		JScrollPane scrollPaneConsole = new JScrollPane((Component) null);
+		// scrollPaneConsole.getVerticalScrollBar().addAdjustmentListener(e -> {
+		// e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+		// });
 		panelConsole.add(scrollPaneConsole, "name_2349855873542");
 
 		areaConsole = new JTextArea();
 		areaConsole.setEditable(false);
 		scrollPaneConsole.setViewportView(areaConsole);
-
-		// adding listener to receive events from backend
-		ControllerChain.getChain().addCmdListener((ctx, e) -> {
-			appendToChain(String.valueOf(e.getKey().getId()), e.getKey().getName(), e.getKey().getDescription(),
-					e.getValue().getData().getState().getCmd().name());
-		});
-
-		// add listener for: Console output log
-		ControllerChain.getChain().getContext().addOutputListener(cli -> {
-			appendToConsole(cli);
-		});
 
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -294,19 +339,18 @@ public class MainGUI {
 		refreshTable();
 	}
 
-	enum EMode {
-		Normal, Console
-	}
-
 	public static void appendToConsole(String id, String name, String description, String state) {
 		appendToConsole(String.format("ID: %s [%s]\n   Type: %s\n   Description: %s\n", id, state, name, description));
 	}
 
 	public static void appendToConsole(String text) {
-		areaConsole.setEditable(true);
-		areaConsole.append(text);
-		areaConsole.setEditable(false);
-		areaConsole.validate();
+		SwingUtilities.invokeLater(() -> {
+			areaConsole.setEditable(true);
+			areaConsole.append(text);
+			areaConsole.setEditable(false);
+			areaConsole.validate();
+		});
+
 	}
 
 	public static void appendToChain(String id, String name, String description, String state) {
@@ -314,9 +358,25 @@ public class MainGUI {
 	}
 
 	public static void appendToChain(String text) {
-		areaChain.setEditable(true);
-		areaChain.append(text + "\n");
-		areaChain.setEditable(false);
-		areaChain.validate();
+		SwingUtilities.invokeLater(() -> {
+			areaChain.setEditable(true);
+			areaChain.append(text + "\n");
+			areaChain.setEditable(false);
+			areaChain.validate();
+		});
+	}
+
+	/**
+	 * Enum Window Modes
+	 * 
+	 * @author max
+	 *
+	 */
+	enum EMode {
+		Normal, Console
+	}
+
+	enum ErrorMode {
+		FailOnErr, NotFailOnErr
 	}
 }

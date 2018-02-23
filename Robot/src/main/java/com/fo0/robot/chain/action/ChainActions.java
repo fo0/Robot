@@ -4,6 +4,7 @@ import java.util.Map.Entry;
 
 import com.fo0.robot.chain.Chain;
 import com.fo0.robot.chain.ChainItem;
+import com.fo0.robot.controller.Controller;
 import com.fo0.robot.model.ActionItem;
 
 public class ChainActions extends Chain<ActionContext> {
@@ -30,6 +31,10 @@ public class ChainActions extends Chain<ActionContext> {
 
 	@Override
 	public void start() {
+		try {
+			setFailOnError(!Controller.getConfig().ignoreErrors);
+		} catch (Exception e) {
+		}
 		createChains();
 		super.start();
 		getContext().reset();
