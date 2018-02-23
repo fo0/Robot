@@ -31,6 +31,10 @@ Options:
       --config [-c] (a string; default: "")
         Read config by Path
 
+    Options category 'Errors':
+      --[no]ignoreErrors [-i] (a boolean; default: "false")
+        Ignore Errors in Chain
+
     Options category 'GUI':
       --[no]nogui [-n] (a boolean; default: "false")
         Graphical User Interface
