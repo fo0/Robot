@@ -111,7 +111,7 @@ class HintTexAreaUI extends javax.swing.plaf.basic.BasicTextAreaUI implements Fo
 				g.setColor(Color.gray);
 			}
 			int padding = (comp.getHeight() - comp.getFont().getSize()) / 2;
-			drawStrings(hint.split("\\n"), 5, comp.getHeight() - padding - 20, g);
+			drawStrings(hint.split("\\n"), 5, comp.getHeight() - padding - 30, g);
 		}
 	}
 

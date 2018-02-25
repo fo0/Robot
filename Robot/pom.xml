@@ -93,6 +93,12 @@
 			<artifactId>jcabi-ssh</artifactId>
 			<version>[1.6, )</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->
+		<dependency>
+			<groupId>com.hierynomus</groupId>
+			<artifactId>sshj</artifactId>
+			<version>0.23.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

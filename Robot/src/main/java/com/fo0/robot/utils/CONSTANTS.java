@@ -6,7 +6,7 @@ public class CONSTANTS {
 
 	public static final String GITHUB_URI = "fo0/Robot";
 
-	public static final String VERSION = "0.8.0";
+	public static final String VERSION = "0.8.5";
 
 	/**
 	 * Basics
@@ -25,4 +25,5 @@ public class CONSTANTS {
 	public static final String PASSWORD = "$PASSWORD";
 	public static final String PORT = "$PORT";
 	public static final String CMD = "$CMD";
+	// file: using basic $SRC and $DST
 }

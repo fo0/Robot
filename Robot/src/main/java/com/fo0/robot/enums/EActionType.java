@@ -14,7 +14,15 @@ public enum EActionType {
 	Zip(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
 
 	SSH(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "(port)\n" + CONSTANTS.USER + "(user)\n" + CONSTANTS.PASSWORD
-			+ "(Password)\n" + CONSTANTS.CMD + "(CMD)");
+			+ "(Password)\n" + CONSTANTS.CMD + "(CMD)"),
+
+	SCP_Upload(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "(port)\n" + CONSTANTS.USER + "(user)\n"
+			+ CONSTANTS.PASSWORD + "(Password)\n" + CONSTANTS.SOURCE + "(localPath) \n" + CONSTANTS.DESTINATION
+			+ "(remotePath)"),
+
+	SCP_Download(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "(port)\n" + CONSTANTS.USER + "(user)\n"
+			+ CONSTANTS.PASSWORD + "(Password)\n" + CONSTANTS.SOURCE + "(remotePath) \n" + CONSTANTS.DESTINATION
+			+ "(localPath)");
 
 	private String hint;
 

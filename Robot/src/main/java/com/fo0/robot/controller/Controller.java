@@ -65,6 +65,8 @@ public class Controller {
 			Logger.info("detected cli mode, but no config - exiting now");
 			System.exit(0);
 		}
+		
+		// update function, take care of loop
 
 	}
 

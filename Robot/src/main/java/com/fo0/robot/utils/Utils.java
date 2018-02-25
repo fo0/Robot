@@ -33,6 +33,26 @@ public class Utils {
 		return true;
 	}
 
+	public static String humanReadableBandwith(long msecs, long bytes) {
+		long secs = msecs / 1000;
+		long bits = bytes * 8;
+		float speed = bits / secs;
+
+		long Kbit = 1024;
+		long Mbit = Kbit * 1024;
+		long Gbit = Mbit * 1024;
+
+		if (speed < Kbit)
+			return String.valueOf(speed) + " bit/s";
+		if (speed > Kbit && speed < Mbit)
+			return String.valueOf(speed / Kbit) + " Kbit/s";
+		if (speed > Mbit && speed < Gbit)
+			return String.valueOf(speed / Mbit) + " Mbit/s";
+		if (speed > Gbit)
+			return String.valueOf(speed / Gbit) + " Gbit/s";
+		return "???";
+	}
+
 	public static void restartApplication(Class<?> CLAZZ, String[] MAIN_CLASS_ARGS) {
 		Logger.info("Performing a restart");
 		StringBuilder cmd = new StringBuilder();

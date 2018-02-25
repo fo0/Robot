@@ -42,6 +42,8 @@ public class ActionItem {
 		case Unzip:
 		case Download:
 		case SSH:
+		case SCP_Download:
+		case SCP_Upload:
 			// doing parsing
 			Pattern p = CONSTANTS.BASIC_PATTERN;
 			Matcher m = p.matcher(value);

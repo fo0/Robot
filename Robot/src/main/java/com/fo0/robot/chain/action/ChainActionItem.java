@@ -9,23 +9,21 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fo0.robot.chain.ChainCommand;
 import com.fo0.robot.chain.EChainResponse;
 import com.fo0.robot.enums.EActionType;
-import com.fo0.robot.listener.DispatchListener;
-import com.fo0.robot.listener.ValueChangeListener;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.Host;
 import com.fo0.robot.model.KeyValue;
+import com.fo0.robot.model.SCPTransferData;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Commander;
 import com.fo0.robot.utils.Logger;
+import com.fo0.robot.utils.SCPClient;
 import com.fo0.robot.utils.SSHClient;
 import com.fo0.robot.utils.ZipUtils;
-import com.google.common.collect.Lists;
 
 import lombok.Builder;
 
@@ -112,10 +110,10 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			KeyValue sshCmd = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.CMD)).findFirst().orElse(null);
 
 			ctx.addToLog(type, "HOST: " + sshHost.getValue());
+			ctx.addToLog(type, "PORT: " + sshPort.getValue());
 			ctx.addToLog(type, "User: " + sshUser.getValue());
 			ctx.addToLog(type, "Password: " + StringUtils.join(
 					IntStream.range(0, sshPassword.getValue().length()).mapToObj(e -> "*").toArray(String[]::new)));
-			ctx.addToLog(type, "PORT: " + sshPort.getValue());
 			ctx.addToLog(type, "CMD: " + sshCmd.getValue());
 
 			SSHClient sshClient = new SSHClient(
@@ -133,6 +131,54 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			}, error -> {
 				ctx.addToLogPlain(type, error);
 			});
+			break;
+
+		case SCP_Download:
+		case SCP_Upload:
+			List<KeyValue> scpList = item.getValue().parsedValue();
+			KeyValue scpHost = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
+			KeyValue scpPort = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst().orElse(null);
+			KeyValue scpUser = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst().orElse(null);
+			KeyValue scpPassword = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst()
+					.orElse(null);
+			KeyValue scpSrc = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst()
+					.orElse(null);
+			KeyValue scpDst = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+					.orElse(null);
+
+			ctx.addToLog(type, "HOST: " + scpHost.getValue());
+			ctx.addToLog(type, "PORT: " + scpPort.getValue());
+			ctx.addToLog(type, "User: " + scpUser.getValue());
+			ctx.addToLog(type, "Password: " + StringUtils.join(
+					IntStream.range(0, scpPassword.getValue().length()).mapToObj(e -> "*").toArray(String[]::new)));
+			ctx.addToLog(type, "SRC: " + scpSrc.getValue());
+			ctx.addToLog(type, "DST: " + scpDst.getValue());
+
+			SCPClient scpClient = new SCPClient(
+					Host.builder().address(scpHost.getValue()).port(Integer.parseInt(scpPort.getValue()))
+							.username(scpUser.getValue()).password(scpPassword.getValue()).build());
+			try {
+				scpClient.connect();
+			} catch (Exception e2) {
+				ctx.addToLog(type, "failed to connect to Host " + e2);
+				return EChainResponse.Failed;
+			}
+
+			SCPTransferData data = null;
+
+			// establish transfer
+			try {
+				if (type == EActionType.SCP_Download) {
+					data = scpClient.download(scpDst.getValue(), scpSrc.getValue());
+				} else {
+					data = scpClient.upload(scpDst.getValue(), scpSrc.getValue());
+				}
+			} catch (Exception e2) {
+				ctx.addToLog(type, "failed to transfer data " + e2);
+				data = SCPTransferData.builder().build();
+			}
+
+			ctx.addToLog(type, "Transfer: " + data.info());
 			break;
 
 		default:

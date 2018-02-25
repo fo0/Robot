@@ -29,4 +29,23 @@ public class SSHPatternCheck {
 		Assert.assertEquals("$(CMD)", "echo test");
 	}
 
+	// $HOST(fo0systems.net) $PORT(4444) $USER(root) $PASSWORD(max123Max123)
+	// $SRC(/root/test) $DST(/home/max/git/Robot/Robot/test/test)
+
+	@Test
+	public void parsingSCPInputText() {
+		String inputText = "$HOST(fo0systems.net) " + "$PORT(4444) " + "$USER(root) " + "$PASSWORD(max123Max123) "
+				+ "$SRC(/root/test) " + "$DST(/home/max/git/Robot/Robot/test/test)";
+
+		Pattern pattern = CONSTANTS.SSH_PATTERN;
+		Matcher m = pattern.matcher(inputText);
+
+		while (m.find()) {
+			System.out.println(KeyValue.builder().key(m.group(1)).value(m.group(2)).build());
+		}
+
+		Assert.assertEquals("$(HOST)", "github.com");
+		Assert.assertEquals("$(PORT)", "22");
+		Assert.assertEquals("$(CMD)", "echo test");
+	}
 }
