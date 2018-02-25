@@ -6,7 +6,7 @@ public class CONSTANTS {
 
 	public static final String GITHUB_URI = "fo0/Robot";
 
-	public static final String VERSION = "0.8.5";
+	public static final String VERSION = "0.8.6";
 
 	/**
 	 * Basics
