@@ -1,5 +1,7 @@
 package com.fo0.robot.controller;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fo0.robot.config.Config;
 import com.fo0.robot.config.ConfigParser;
 import com.fo0.robot.gui.main.MainGUI;
@@ -35,6 +37,7 @@ public class Controller {
 		Logger.info("	Version: " + CONSTANTS.VERSION);
 		Logger.info("	Author: fo0");
 		Logger.info("	GitHub: https://github.com/fo0/Robot");
+		Logger.info("	Options: " + StringUtils.join(arg, ", "));
 		Logger.info("##############################################");
 	}
 
