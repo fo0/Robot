@@ -52,6 +52,15 @@ public class Controller {
 
 		if (!config.nogui) {
 			MainGUI.bootstrap();
+		} else {
+			// update function, take care of loop
+			if (config.update) {
+				Logger.info("detected update mode, starting updater");
+				if (UpdateUtils.isAvailable()) {
+					Logger.info("new update available, performing update now");
+					UpdateUtils.doUpdate();
+				}
+			}
 		}
 
 		// detect if cli and path set, automatically execute chain
@@ -65,8 +74,6 @@ public class Controller {
 			Logger.info("detected cli mode, but no config - exiting now");
 			System.exit(0);
 		}
-		
-		// update function, take care of loop
 
 	}
 

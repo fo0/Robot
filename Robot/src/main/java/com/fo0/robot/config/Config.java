@@ -16,4 +16,7 @@ public class Config extends OptionsBase {
 
 	@Option(name = "ignoreErrors", abbrev = 'i', category = "Errors", help = "Ignore Errors in Chain", defaultValue = "false")
 	public boolean ignoreErrors;
+
+	@Option(name = "update", abbrev = 'u', category = "Update", help = "Download Updates if needed", defaultValue = "false")
+	public boolean update;
 }
