@@ -36,7 +36,6 @@ import com.fo0.robot.utils.Utils;
 
 public class MainGUI {
 
-	private static MainGUI window = null;
 	private static JFrame frame;
 
 	private static BeanTableModelAction tableModel;
@@ -51,9 +50,8 @@ public class MainGUI {
 	 * @wbp.parser.entryPoint
 	 */
 	public static void bootstrap() {
-		window = new MainGUI();
 		initialize();
-		MainGUI.frame.setVisible(true);
+		frame.setVisible(true);
 	}
 
 	public static void toggleConsole(EMode mode) {
@@ -316,7 +314,7 @@ public class MainGUI {
 			}
 		});
 		mnHelp.add(mntmHelpUpdate);
-		MainGUI.refreshTable();
+		refreshTable();
 	}
 
 	public static void addItem(ActionItem action) {

@@ -109,8 +109,12 @@ public class AddChainItemWindow {
 		frame.getContentPane().add(cbType);
 
 		btnSave = new JButton("Save");
-		btnSave.setIcon(
-				new ImageIcon(AddChainItemWindow.class.getResource("/javax/swing/plaf/metal/icons/ocean/floppy.gif")));
+		try {
+			btnSave.setIcon(new ImageIcon(
+					AddChainItemWindow.class.getResource("/javax/swing/plaf/metal/icons/ocean/floppy.gif")));
+		} catch (Exception e2) {
+		}
+
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MainGUI.addItem(
