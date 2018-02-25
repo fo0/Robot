@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.stream.IntStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -17,10 +18,12 @@ import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.listener.DispatchListener;
 import com.fo0.robot.listener.ValueChangeListener;
 import com.fo0.robot.model.ActionItem;
+import com.fo0.robot.model.Host;
 import com.fo0.robot.model.KeyValue;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Commander;
 import com.fo0.robot.utils.Logger;
+import com.fo0.robot.utils.SSHClient;
 import com.fo0.robot.utils.ZipUtils;
 import com.google.common.collect.Lists;
 
@@ -40,7 +43,7 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		switch (type) {
 		case Commandline:
 			Commander commander = new Commander(log -> {
-				ctx.addToLog(log);
+				ctx.addToLogPlain(type, log);
 			});
 
 			commander.execute(true, System.getProperty("user.dir"), item.getValue().getValue());
@@ -53,11 +56,8 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 		case Download:
 			List<KeyValue> downloads = item.getValue().parsedValue();
-			KeyValue url = null;
-			KeyValue path = null;
-
-			url = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-			path = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst().orElse(
+			KeyValue url = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
+			KeyValue path = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst().orElse(
 					KeyValue.builder().key(CONSTANTS.DESTINATION).value(FilenameUtils.getName(url.getValue())).build());
 
 			ctx.addToLog(type, "SRC: " + url);
@@ -73,16 +73,14 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			file.createNewFile();
 
 			FileUtils.copyInputStreamToFile(new URL(url.getValue()).openStream(), file);
-			ctx.addToLog("Finished Download: Success");
+			ctx.addToLog(type, "Finished Download: Success");
 			break;
 
 		case Zip:
 			List<KeyValue> zipList = item.getValue().parsedValue();
-			KeyValue zipSrc = null;
-			KeyValue zipDest = null;
-
-			zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-			zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+			KeyValue zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst()
+					.orElse(null);
+			KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 					.orElse(KeyValue.builder().build());
 
 			ctx.addToLog(type, "SRC: " + zipSrc);
@@ -93,11 +91,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 		case Unzip:
 			List<KeyValue> unzipList = item.getValue().parsedValue();
-			KeyValue unzipSrc = null;
-			KeyValue unzipDst = null;
-
-			unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-			unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+			KeyValue unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst()
+					.orElse(null);
+			KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 					.orElse(KeyValue.builder().build());
 
 			ctx.addToLog(type, "SRC: " + unzipSrc);
@@ -106,7 +102,41 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			ZipUtils.unzip(unzipSrc.getValue(), unzipDst.getValue());
 			break;
 
+		case SSH:
+			List<KeyValue> sshList = item.getValue().parsedValue();
+			KeyValue sshHost = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
+			KeyValue sshPort = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst().orElse(null);
+			KeyValue sshUser = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst().orElse(null);
+			KeyValue sshPassword = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst()
+					.orElse(null);
+			KeyValue sshCmd = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.CMD)).findFirst().orElse(null);
+
+			ctx.addToLog(type, "HOST: " + sshHost.getValue());
+			ctx.addToLog(type, "User: " + sshUser.getValue());
+			ctx.addToLog(type, "Password: " + StringUtils.join(
+					IntStream.range(0, sshPassword.getValue().length()).mapToObj(e -> "*").toArray(String[]::new)));
+			ctx.addToLog(type, "PORT: " + sshPort.getValue());
+			ctx.addToLog(type, "CMD: " + sshCmd.getValue());
+
+			SSHClient sshClient = new SSHClient(
+					Host.builder().address(sshHost.getValue()).port(Integer.parseInt(sshPort.getValue()))
+							.username(sshUser.getValue()).password(sshPassword.getValue()).build());
+
+			sshClient.connect();
+			if (!sshClient.test()) {
+				ctx.addToLog(type, "failed to connect to Host");
+				return EChainResponse.Failed;
+			}
+
+			sshClient.command(sshCmd.getValue(), null, out -> {
+				ctx.addToLogPlain(type, out);
+			}, error -> {
+				ctx.addToLogPlain(type, error);
+			});
+			break;
+
 		default:
+			ctx.addToLog(type, "Currently not implemented, you may check for updates");
 			break;
 		}
 

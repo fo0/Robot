@@ -11,7 +11,10 @@ public enum EActionType {
 
 	Unzip(CONSTANTS.SOURCE + "(/my/path/to/folder/or/file) \n" + CONSTANTS.DESTINATION + "(/extract/to)"),
 
-	Zip(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)");
+	Zip(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
+
+	SSH(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "(port)\n" + CONSTANTS.USER + "(user)\n" + CONSTANTS.PASSWORD
+			+ "(Password)\n" + CONSTANTS.CMD + "(CMD)");
 
 	private String hint;
 

@@ -113,8 +113,9 @@ public class ActionContext {
 	 * @param type
 	 * @param log
 	 */
-	public void addToLog(String log) {
-		Logger.debug("Action Log: " + log);
+	public void addToLogPlain(EActionType type, String log) {
+		String msg = "[Action|" + type + "] " + log;
+		Logger.debug(msg);
 		if (outputListener != null) {
 			outputListener.event(inputListener.event(log));
 		}

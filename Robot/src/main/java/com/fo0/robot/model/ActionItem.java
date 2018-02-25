@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.fo0.robot.enums.EActionType;
+import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Random;
 
 import lombok.Builder;
@@ -40,8 +41,9 @@ public class ActionItem {
 		case Zip:
 		case Unzip:
 		case Download:
+		case SSH:
 			// doing parsing
-			Pattern p = Pattern.compile("(\\$\\w+)" + Pattern.quote("(") + "(.+?)" + Pattern.quote(")"));
+			Pattern p = CONSTANTS.BASIC_PATTERN;
 			Matcher m = p.matcher(value);
 
 			while (m.find()) {
