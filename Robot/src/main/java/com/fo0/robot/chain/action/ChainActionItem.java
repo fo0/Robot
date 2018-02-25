@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 import org.apache.commons.io.FileUtils;
@@ -23,7 +24,9 @@ import com.fo0.robot.utils.Commander;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.SCPClient;
 import com.fo0.robot.utils.SSHClient;
+import com.fo0.robot.utils.Utils;
 import com.fo0.robot.utils.ZipUtils;
+import com.google.common.base.Stopwatch;
 
 import lombok.Builder;
 
@@ -69,9 +72,22 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			}
 
 			file.createNewFile();
+			Stopwatch timer = Stopwatch.createStarted();
+			try {
+				FileUtils.copyInputStreamToFile(new URL(url.getValue()).openStream(), file);
+				timer.stop();
+				ctx.addToLog(type,
+						"Finished Download: " + file.getName() + ", Size: " + FileUtils.sizeOf(file) + ", Speed: "
+								+ Utils.humanReadableBandwith(timer.elapsed(TimeUnit.MILLISECONDS), file.length()));
+			} catch (Exception e2) {
+				ctx.addToLog(type, "failed to download: " + url.getValue());
+			} finally {
+				try {
+					timer.stop();
+				} catch (Exception e3) {
+				}
+			}
 
-			FileUtils.copyInputStreamToFile(new URL(url.getValue()).openStream(), file);
-			ctx.addToLog(type, "Finished Download: Success");
 			break;
 
 		case Zip:
