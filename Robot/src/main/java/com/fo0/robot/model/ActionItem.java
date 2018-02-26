@@ -38,22 +38,14 @@ public class ActionItem {
 			list.add(KeyValue.builder().key(type.name()).value(value).build());
 			break;
 
-		case Zip:
-		case Unzip:
-		case Download:
-		case SSH:
-		case SCP_Download:
-		case SCP_Upload:
-			// doing parsing
+		default:
+			// doing basic parsing
 			Pattern p = CONSTANTS.BASIC_PATTERN;
 			Matcher m = p.matcher(value);
 
 			while (m.find()) {
 				list.add(KeyValue.builder().key(m.group(1)).value(m.group(2)).build());
 			}
-			break;
-
-		default:
 			break;
 		}
 

@@ -14,16 +14,17 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fo0.robot.chain.ChainCommand;
 import com.fo0.robot.chain.EChainResponse;
+import com.fo0.robot.connector.FTPClient;
+import com.fo0.robot.connector.SCPClient;
+import com.fo0.robot.connector.SSHClient;
 import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.Host;
 import com.fo0.robot.model.KeyValue;
-import com.fo0.robot.model.SCPTransferData;
+import com.fo0.robot.model.FileTransferData;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Commander;
 import com.fo0.robot.utils.Logger;
-import com.fo0.robot.utils.SCPClient;
-import com.fo0.robot.utils.SSHClient;
 import com.fo0.robot.utils.Utils;
 import com.fo0.robot.utils.ZipUtils;
 import com.google.common.base.Stopwatch;
@@ -119,7 +120,8 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		case SSH:
 			List<KeyValue> sshList = item.getValue().parsedValue();
 			KeyValue sshHost = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
-			KeyValue sshPort = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst().orElse(null);
+			KeyValue sshPort = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst()
+					.orElse(KeyValue.builder().key("PORT").value("22").build());
 			KeyValue sshUser = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst().orElse(null);
 			KeyValue sshPassword = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst()
 					.orElse(null);
@@ -153,7 +155,8 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		case SCP_Upload:
 			List<KeyValue> scpList = item.getValue().parsedValue();
 			KeyValue scpHost = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
-			KeyValue scpPort = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst().orElse(null);
+			KeyValue scpPort = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst()
+					.orElse(KeyValue.builder().key("PORT").value("22").build());
 			KeyValue scpUser = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst().orElse(null);
 			KeyValue scpPassword = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst()
 					.orElse(null);
@@ -180,7 +183,7 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 				return EChainResponse.Failed;
 			}
 
-			SCPTransferData data = null;
+			FileTransferData data = null;
 
 			// establish transfer
 			try {
@@ -191,10 +194,50 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 				}
 			} catch (Exception e2) {
 				ctx.addToLog(type, "failed to transfer data " + e2);
-				data = SCPTransferData.builder().build();
+				data = FileTransferData.builder().build();
 			}
 
 			ctx.addToLog(type, "Transfer: " + data.info());
+			break;
+
+		case FTP_Download:
+			List<KeyValue> ftpList = item.getValue().parsedValue();
+			KeyValue ftpHost = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
+			KeyValue ftpPort = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst()
+					.orElse(KeyValue.builder().key("PORT").value("21").build());
+			KeyValue ftpUser = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst()
+					.orElse(KeyValue.builder().key("USER").value("anonymous").build());
+			KeyValue ftpPassword = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst()
+					.orElse(KeyValue.builder().key("PASSWORD").value("").build());
+			KeyValue ftpSrc = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst()
+					.orElse(null);
+			KeyValue ftpDst = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+					.orElse(null);
+
+			ctx.addToLog(type, "HOST: " + ftpHost.getValue());
+			ctx.addToLog(type, "PORT: " + ftpPort.getValue());
+			ctx.addToLog(type, "User: " + ftpUser.getValue());
+			ctx.addToLog(type, "Password: " + StringUtils.join(
+					IntStream.range(0, ftpPassword.getValue().length()).mapToObj(e -> "*").toArray(String[]::new)));
+			ctx.addToLog(type, "SRC: " + ftpSrc.getValue());
+			ctx.addToLog(type, "DST: " + ftpDst.getValue());
+
+			FTPClient ftpClient = new FTPClient(
+					Host.builder().address(ftpHost.getValue()).port(Integer.parseInt(ftpPort.getValue()))
+							.username(ftpUser.getValue()).password(ftpPassword.getValue()).build());
+
+			if (!ftpClient.connect()) {
+				ctx.addToLog(type, "failed to connect to Host");
+				return EChainResponse.Failed;
+			}
+
+			FileTransferData ftpData = ftpClient.download(ftpDst.getValue(), ftpSrc.getValue());
+			try {
+				ctx.addToLog(type, "Transfer: " + ftpData.info());
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+
 			break;
 
 		default:

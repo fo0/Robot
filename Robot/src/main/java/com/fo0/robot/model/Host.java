@@ -26,4 +26,7 @@ public class Host {
 	@Builder.Default
 	private boolean active = true;
 
+	public String info() {
+		return String.format("Address: %s, Port: %d, User: %s", address, port, username);
+	}
 }

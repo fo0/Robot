@@ -35,6 +35,10 @@ public class Utils {
 
 	public static String humanReadableBandwith(long msecs, long bytes) {
 		long secs = msecs / 1000;
+
+		if (secs == 0)
+			secs = 1;
+
 		long bits = bytes * 8;
 		float speed = bits / secs;
 

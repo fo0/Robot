@@ -22,6 +22,10 @@ public enum EActionType {
 
 	SCP_Download(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "(port)\n" + CONSTANTS.USER + "(user)\n"
 			+ CONSTANTS.PASSWORD + "(Password)\n" + CONSTANTS.SOURCE + "(remotePath) \n" + CONSTANTS.DESTINATION
+			+ "(localPath)"),
+
+	FTP_Download(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "(port)\n" + CONSTANTS.USER + "(user)\n"
+			+ CONSTANTS.PASSWORD + "(Password)\n" + CONSTANTS.SOURCE + "(remoteFileName) \n" + CONSTANTS.DESTINATION
 			+ "(localPath)");
 
 	private String hint;

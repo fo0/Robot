@@ -12,7 +12,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class SCPTransferData {
+public class FileTransferData {
 
 	private String localPath;
 	private String remotePath;
@@ -21,6 +21,7 @@ public class SCPTransferData {
 
 	private long size = 0;
 
+	@Builder.Default
 	private long started = System.currentTimeMillis();
 	private long finished = 0;
 

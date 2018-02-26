@@ -1,4 +1,4 @@
-package com.fo0.robot.utils;
+package com.fo0.robot.connector;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import com.fo0.robot.listener.DataListener;
 import com.fo0.robot.listener.InputListener;
 import com.fo0.robot.model.Host;
+import com.fo0.robot.utils.Logger;
 import com.jcabi.ssh.Shell;
 import com.jcabi.ssh.SshByPassword;
 

@@ -1,11 +1,12 @@
-package com.fo0.robot.utils;
+package com.fo0.robot.connector;
 
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 
 import com.fo0.robot.model.Host;
-import com.fo0.robot.model.SCPTransferData;
+import com.fo0.robot.model.FileTransferData;
+import com.fo0.robot.utils.Logger;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
@@ -26,12 +27,12 @@ public class SCPClient {
 		client.authPassword(host.getUsername(), host.getPassword());
 	}
 
-	public SCPTransferData download(String localPath, String remotePath) {
+	public FileTransferData download(String localPath, String remotePath) {
 		if (client == null) {
 			return null;
 		}
 
-		SCPTransferData data = SCPTransferData.builder().build();
+		FileTransferData data = FileTransferData.builder().build();
 		data.setLocalPath(localPath);
 		data.setRemotePath(remotePath);
 		data.setStarted(System.currentTimeMillis());
@@ -49,12 +50,12 @@ public class SCPClient {
 		return data;
 	}
 
-	public SCPTransferData upload(String remotePath, String localPath) {
+	public FileTransferData upload(String remotePath, String localPath) {
 		if (client == null) {
 			return null;
 		}
 
-		SCPTransferData data = SCPTransferData.builder().build();
+		FileTransferData data = FileTransferData.builder().build();
 		data.setLocalPath(localPath);
 		data.setRemotePath(remotePath);
 		data.setStarted(System.currentTimeMillis());
