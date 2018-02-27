@@ -16,6 +16,7 @@ You can load and save your actions via configs to persist your work.
 TODO:
 
 * TAR
+* Interactive Console (CLI)
 
 # Demo
 ![Demo-GUI](https://github.com/fo0/Robot/blob/master/Robot/files/demo-gui-v0-7-3.gif)
