@@ -106,7 +106,7 @@ public class MainGUI {
 		btnDel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int col = actionTable.getSelectedRow();
-				tableModel.removeRow(tableModel.getRow(col));
+				deleteItem(tableModel.getRow(col));
 			}
 		});
 		btnDel.setBounds(169, 0, 73, 24);
