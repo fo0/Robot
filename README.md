@@ -53,9 +53,14 @@ Options:
       --[no]nogui [-n] (a boolean; default: "false")
         Graphical User Interface
 
+    Options category 'Update':
+      --[no]update [-u] (a boolean; default: "false")
+        Download Updates if needed
+
     Options category 'Verbose':
       --[no]verbose [-v] (a boolean; default: "false")
         Debug Log Level
+
 
 # Start-Scripts
 
