@@ -21,15 +21,15 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 	public void addRow(ActionItem row) {
 		ActionItem tmpRow = getRow(row);
 		if (tmpRow != null) {
-			removeRow(row);
+			removeRow(row, false);
 		}
 		super.addRow(row);
 		ControllerChain.getChain().addActionItem(row);
 	}
 
 	@Override
-	public void removeRow(ActionItem row) {
-		super.removeRow(row);
+	public void removeRow(ActionItem row, boolean updateModel) {
+		super.removeRow(row, updateModel);
 		ControllerChain.getChain().removeActionItem(row);
 	}
 

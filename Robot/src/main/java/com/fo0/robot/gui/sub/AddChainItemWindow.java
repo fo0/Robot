@@ -22,6 +22,7 @@ import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.gui.main.MainGUI;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.AdvancedTextArea;
+import javax.swing.JCheckBox;
 
 public class AddChainItemWindow {
 
@@ -35,6 +36,7 @@ public class AddChainItemWindow {
 	private JButton btnDiscard;
 	private JLabel lblDescription;
 	private JTextField txtDescription;
+	private JCheckBox chkboxActive;
 
 	/**
 	 * Create the application.
@@ -117,9 +119,9 @@ public class AddChainItemWindow {
 
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainGUI.addItem(
-						ActionItem.builder().id(lblIDValue.getText()).type((EActionType) cbType.getSelectedItem())
-								.value(txtAction.getText()).description(txtDescription.getText()).build());
+				MainGUI.addItem(ActionItem.builder().id(lblIDValue.getText())
+						.type((EActionType) cbType.getSelectedItem()).value(txtAction.getText())
+						.description(txtDescription.getText()).active(chkboxActive.isSelected()).build());
 				frame.setVisible(false);
 				frame.dispose();
 			}
@@ -143,7 +145,7 @@ public class AddChainItemWindow {
 		lblIDValue.setText(item.getId());
 		lblIDValue.setHorizontalAlignment(SwingConstants.LEFT);
 		lblIDValue.setFont(new Font("Dialog", Font.BOLD, 16));
-		lblIDValue.setBounds(126, 12, 366, 29);
+		lblIDValue.setBounds(126, 12, 252, 29);
 
 		frame.getContentPane().add(lblIDValue);
 
@@ -165,6 +167,12 @@ public class AddChainItemWindow {
 		panelTxtArea.setLayout(new CardLayout(0, 0));
 
 		panelTxtArea.add(scrollPane, "name_7623088305357");
+
+		chkboxActive = new JCheckBox("Active", item.isActive());
+		chkboxActive.setBackground(Color.LIGHT_GRAY);
+		chkboxActive.setFont(new Font("Dialog", Font.BOLD, 14));
+		chkboxActive.setBounds(446, 13, 74, 29);
+		frame.getContentPane().add(chkboxActive);
 
 		SwingUtilities.invokeLater(new Runnable() {
 

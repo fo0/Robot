@@ -13,6 +13,8 @@ public enum EChainResponse {
 
 	Break(-1),
 
+	Skip(-2),
+
 	Failed(-10);
 
 	private int code;

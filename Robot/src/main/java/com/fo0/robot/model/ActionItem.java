@@ -30,6 +30,9 @@ public class ActionItem {
 	@Builder.Default
 	private String value;
 
+	@Builder.Default
+	private boolean active = true;
+
 	public List<KeyValue> parsedValue() {
 		List<KeyValue> list = new ArrayList<KeyValue>();
 		switch (type) {

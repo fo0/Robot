@@ -2,8 +2,12 @@ package com.fo0.robot.chain.action;
 
 import java.io.File;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.TreeMap;
 
 import com.fo0.robot.enums.EActionType;
@@ -119,6 +123,19 @@ public class ActionContext {
 		if (outputListener != null) {
 			outputListener.event(inputListener.event(log));
 		}
+	}
+
+	public void sortList() {
+		// get sorted order of map
+		Map<Integer, ActionItem> sortedMap = new TreeMap<Integer, ActionItem>();
+		int counter = 0;
+		for (Iterator<Entry<Integer, ActionItem>> iterator = map.entrySet().iterator(); iterator.hasNext();) {
+			Entry<Integer, ActionItem> item = iterator.next();
+			sortedMap.put(counter, item.getValue());
+			counter++;
+		}
+
+		this.map = sortedMap;
 	}
 
 	/**

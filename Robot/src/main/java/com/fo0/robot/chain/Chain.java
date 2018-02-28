@@ -116,7 +116,16 @@ public class Chain<T> {
 					if (e.getValue().getData().getState().getPre().code() > 0) {
 						e.getValue().getData().getState().setState(EState.Success);
 					} else {
-						e.getValue().getData().getState().setState(EState.Failed);
+						if (e.getValue().getData().getState().getPre() == EChainResponse.Skip) {
+							e.getValue().getData().getState().setPre(EChainResponse.Skip);
+							e.getValue().getData().getState().setCmd(EChainResponse.Skip);
+							e.getValue().getData().getState().setPost(EChainResponse.Skip);
+							if (cmdListener != null)
+								cmdListener.event(getContext(), e);
+							continue;
+						} else {
+							e.getValue().getData().getState().setState(EState.Failed);
+						}
 					}
 
 				} catch (Exception e2) {
@@ -140,7 +149,17 @@ public class Chain<T> {
 					if (e.getValue().getData().getState().getPost().code() > 0) {
 						e.getValue().getData().getState().setState(EState.Success);
 					} else {
-						e.getValue().getData().getState().setState(EState.Failed);
+						if (e.getValue().getData().getState().getPost() == EChainResponse.Skip) {
+							e.getValue().getData().getState().setPre(EChainResponse.Skip);
+							e.getValue().getData().getState().setCmd(EChainResponse.Skip);
+							e.getValue().getData().getState().setPost(EChainResponse.Skip);
+							if (cmdListener != null)
+								cmdListener.event(getContext(), e);
+							continue;
+						} else {
+							e.getValue().getData().getState().setState(EState.Failed);
+						}
+
 					}
 
 				} catch (Exception e2) {
@@ -164,7 +183,17 @@ public class Chain<T> {
 					if (e.getValue().getData().getState().getCmd().code() > 0) {
 						e.getValue().getData().getState().setState(EState.Success);
 					} else {
-						e.getValue().getData().getState().setState(EState.Failed);
+						if (e.getValue().getData().getState().getCmd() == EChainResponse.Skip) {
+							e.getValue().getData().getState().setPre(EChainResponse.Skip);
+							e.getValue().getData().getState().setCmd(EChainResponse.Skip);
+							e.getValue().getData().getState().setPost(EChainResponse.Skip);
+							if (cmdListener != null)
+								cmdListener.event(getContext(), e);
+							continue;
+						} else {
+							e.getValue().getData().getState().setState(EState.Failed);
+						}
+
 					}
 
 				} catch (Exception e2) {
