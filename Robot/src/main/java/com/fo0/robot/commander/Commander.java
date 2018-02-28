@@ -1,4 +1,4 @@
-package com.fo0.robot.utils;
+package com.fo0.robot.commander;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fo0.robot.listener.ValueChangeListener;
+import com.fo0.robot.utils.Logger;
+import com.fo0.robot.utils.OSCheck;
 
 public class Commander {
 
