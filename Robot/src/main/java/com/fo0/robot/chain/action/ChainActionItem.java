@@ -195,13 +195,13 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
-		ctx.addToLog(type, "SRC: " + zipSrc);
-		ctx.addToLog(type, "DST: " + zipDest);
+		ctx.addToLog(type, "SRC: " + zipSrc.getValue());
+		ctx.addToLog(type, "DST: " + zipDest.getValue());
 
 		// old method
 		// ZipUtils.zip(zipSrc.getValue(), zipDest.getValue());
 		Archiver zipArchive = ArchiverFactory.createArchiver(ArchiveFormat.ZIP);
-		zipArchive.create(zipDest.getValue(), new File(zipDest.getValue()).getParentFile(),
+		zipArchive.create(new File(zipDest.getValue()).getName(), new File(zipDest.getValue()).getParentFile(),
 				new File(zipSrc.getValue()));
 		return EChainResponse.Continue;
 	}
@@ -213,8 +213,8 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
-		ctx.addToLog(type, "SRC: " + unzipSrc);
-		ctx.addToLog(type, "DST: " + unzipDst);
+		ctx.addToLog(type, "SRC: " + unzipSrc.getValue());
+		ctx.addToLog(type, "DST: " + unzipDst.getValue());
 
 		Archiver unzipArchive = ArchiverFactory.createArchiver(ArchiveFormat.ZIP);
 		unzipArchive.extract(new File(unzipSrc.getValue()), new File(unzipDst.getValue()));
@@ -314,13 +314,13 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
-		ctx.addToLog(type, "SRC: " + zipSrc);
-		ctx.addToLog(type, "DST: " + zipDest);
+		ctx.addToLog(type, "SRC: " + zipSrc.getValue());
+		ctx.addToLog(type, "DST: " + zipDest.getValue());
 
 		// old method
 		// ZipUtils.zip(zipSrc.getValue(), zipDest.getValue());
 		Archiver zipArchive = ArchiverFactory.createArchiver(ArchiveFormat.TAR);
-		zipArchive.create(zipDest.getValue(), new File(zipDest.getValue()).getParentFile(),
+		zipArchive.create(new File(zipDest.getValue()).getName(), new File(zipDest.getValue()).getParentFile(),
 				new File(zipSrc.getValue()));
 		return EChainResponse.Continue;
 	}
@@ -332,8 +332,8 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
-		ctx.addToLog(type, "SRC: " + unzipSrc);
-		ctx.addToLog(type, "DST: " + unzipDst);
+		ctx.addToLog(type, "SRC: " + unzipSrc.getValue());
+		ctx.addToLog(type, "DST: " + unzipDst.getValue());
 
 		Archiver unzipArchive = ArchiverFactory.createArchiver(ArchiveFormat.TAR);
 		unzipArchive.extract(new File(unzipSrc.getValue()), new File(unzipDst.getValue()));
@@ -346,13 +346,13 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
-		ctx.addToLog(type, "SRC: " + zipSrc);
-		ctx.addToLog(type, "DST: " + zipDest);
+		ctx.addToLog(type, "SRC: " + zipSrc.getValue());
+		ctx.addToLog(type, "DST: " + zipDest.getValue());
 
 		// old method
 		// ZipUtils.zip(zipSrc.getValue(), zipDest.getValue());
 		Archiver zipArchive = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
-		zipArchive.create(zipDest.getValue(), new File(zipDest.getValue()).getParentFile(),
+		zipArchive.create(new File(zipDest.getValue()).getName(), new File(zipDest.getValue()).getParentFile(),
 				new File(zipSrc.getValue()));
 		return EChainResponse.Continue;
 	}
@@ -364,8 +364,8 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
-		ctx.addToLog(type, "SRC: " + unzipSrc);
-		ctx.addToLog(type, "DST: " + unzipDst);
+		ctx.addToLog(type, "SRC: " + unzipSrc.getValue());
+		ctx.addToLog(type, "DST: " + unzipDst.getValue());
 
 		Archiver unzipArchive = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
 		unzipArchive.extract(new File(unzipSrc.getValue()), new File(unzipDst.getValue()));
@@ -378,13 +378,13 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
-		ctx.addToLog(type, "SRC: " + zipSrc);
-		ctx.addToLog(type, "DST: " + zipDest);
+		ctx.addToLog(type, "SRC: " + zipSrc.getValue());
+		ctx.addToLog(type, "DST: " + zipDest.getValue());
 
 		// old method
 		// ZipUtils.zip(zipSrc.getValue(), zipDest.getValue());
 		Archiver zipArchive = ArchiverFactory.createArchiver(ArchiveFormat.SEVEN_Z);
-		zipArchive.create(zipDest.getValue(), new File(zipDest.getValue()).getParentFile(),
+		zipArchive.create(new File(zipDest.getValue()).getName(), new File(zipDest.getValue()).getParentFile(),
 				new File(zipSrc.getValue()));
 		return EChainResponse.Continue;
 	}
@@ -396,8 +396,8 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
-		ctx.addToLog(type, "SRC: " + unzipSrc);
-		ctx.addToLog(type, "DST: " + unzipDst);
+		ctx.addToLog(type, "SRC: " + unzipSrc.getValue());
+		ctx.addToLog(type, "DST: " + unzipDst.getValue());
 
 		Archiver unzipArchive = ArchiverFactory.createArchiver(ArchiveFormat.SEVEN_Z);
 		unzipArchive.extract(new File(unzipSrc.getValue()), new File(unzipDst.getValue()));
