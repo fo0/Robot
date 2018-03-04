@@ -1,4 +1,4 @@
-package com.fo0.robot.gui.sub;
+package com.fo0.robot.client.gui.sub;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -18,8 +18,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import com.fo0.robot.client.gui.main.MainGUI;
 import com.fo0.robot.enums.EActionType;
-import com.fo0.robot.gui.main.MainGUI;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.AdvancedTextArea;
 import javax.swing.JCheckBox;

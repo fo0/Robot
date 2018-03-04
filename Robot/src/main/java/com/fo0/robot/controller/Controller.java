@@ -2,9 +2,9 @@ package com.fo0.robot.controller;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fo0.robot.client.gui.main.MainGUI;
 import com.fo0.robot.config.Config;
 import com.fo0.robot.config.ConfigParser;
-import com.fo0.robot.gui.main.MainGUI;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.UpdateUtils;

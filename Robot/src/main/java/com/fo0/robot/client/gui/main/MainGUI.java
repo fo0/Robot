@@ -1,4 +1,4 @@
-package com.fo0.robot.gui.main;
+package com.fo0.robot.client.gui.main;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -24,10 +24,10 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.fo0.robot.client.gui.sub.AddChainItemWindow;
+import com.fo0.robot.client.gui.sub.UpdateWindow;
 import com.fo0.robot.controller.Controller;
 import com.fo0.robot.controller.ControllerChain;
-import com.fo0.robot.gui.sub.AddChainItemWindow;
-import com.fo0.robot.gui.sub.UpdateWindow;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.BeanTableModelAction;
 import com.fo0.robot.utils.CONSTANTS;

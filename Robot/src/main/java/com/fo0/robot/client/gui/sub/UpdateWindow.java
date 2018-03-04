@@ -1,4 +1,4 @@
-package com.fo0.robot.gui.sub;
+package com.fo0.robot.client.gui.sub;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -14,9 +14,9 @@ import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.fo0.robot.chain.action.ActionContext;
+import com.fo0.robot.client.gui.main.MainGUI;
 import com.fo0.robot.controller.Controller;
 import com.fo0.robot.controller.ControllerChain;
-import com.fo0.robot.gui.main.MainGUI;
 import com.fo0.robot.main.Main;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Logger;
