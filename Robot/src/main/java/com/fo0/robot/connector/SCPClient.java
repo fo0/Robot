@@ -1,14 +1,17 @@
 package com.fo0.robot.connector;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import com.fo0.robot.model.Host;
 import com.fo0.robot.model.FileTransferData;
+import com.fo0.robot.model.Host;
 import com.fo0.robot.utils.Logger;
 
 import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
 
 public class SCPClient {
@@ -22,9 +25,22 @@ public class SCPClient {
 
 	public void connect() throws Exception {
 		client = new SSHClient();
-		client.loadKnownHosts();
+		try {
+			client.addHostKeyVerifier(new PromiscuousVerifier());
+			client.loadKnownHosts();
+		} catch (Exception e) {
+		}
+
+		client.setConnectTimeout(Long.valueOf(TimeUnit.SECONDS.toMillis(5)).intValue());
 		client.connect(host.getAddress(), host.getPort());
-		client.authPassword(host.getUsername(), host.getPassword());
+
+		if (StringUtils.isEmpty(host.getPassword())) {
+			Logger.debug("WATCHDOG: Using Public-Key from current user");
+			client.authPublickey(host.getUsername());
+		} else {
+			Logger.debug("WATCHDOG: Using Username/Password");
+			client.authPassword(host.getUsername(), host.getPassword());
+		}
 	}
 
 	public FileTransferData download(String localPath, String remotePath) {

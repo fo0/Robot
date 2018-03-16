@@ -225,10 +225,10 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		List<KeyValue> scpList = list;
 		KeyValue scpHost = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
 		KeyValue scpPort = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst()
-				.orElse(KeyValue.builder().key("PORT").value("22").build());
+				.orElse(KeyValue.builder().key(CONSTANTS.PORT).value("22").build());
 		KeyValue scpUser = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst().orElse(null);
 		KeyValue scpPassword = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst()
-				.orElse(null);
+				.orElse(KeyValue.builder().key(CONSTANTS.PASSWORD).value("").build());
 		KeyValue scpSrc = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
 		KeyValue scpDst = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
 				.orElse(null);
