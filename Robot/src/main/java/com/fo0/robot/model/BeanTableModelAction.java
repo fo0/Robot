@@ -1,5 +1,7 @@
 package com.fo0.robot.model;
 
+import java.util.Map.Entry;
+
 import com.fo0.robot.controller.ControllerChain;
 import com.fo0.robot.utils.Logger;
 
@@ -20,11 +22,29 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 	@Override
 	public void addRow(ActionItem row) {
 		ActionItem tmpRow = getRow(row);
+
 		if (tmpRow != null) {
-			removeRow(row, false);
+			Entry<Integer, ActionItem> item = ControllerChain.getChain().getActionItem(tmpRow);
+			ControllerChain.getChain().getContext().put(item.getKey(), row);
+			updateRow(item.getKey(), row);
+		} else {
+			ControllerChain.getChain().getContext().put(row);
+			super.addRow(row);
 		}
-		super.addRow(row);
-		ControllerChain.getChain().addActionItem(row);
+
+	}
+
+	@Override
+	public ActionItem updateRow(int idx, ActionItem item) {
+		ActionItem tmpRow = getRow(item);
+
+		if (tmpRow != null) {
+			// todo: update the bean model
+			super.updateRow(idx, item);
+			return tmpRow;
+		}
+
+		return null;
 	}
 
 	@Override
@@ -41,7 +61,6 @@ public class BeanTableModelAction extends BeanTableModel<ActionItem> {
 		try {
 			clear();
 			ControllerChain.getChain().getContext().getMap().entrySet().stream().forEach(e -> {
-				Logger.info("adding action item: " + e.getValue().getType() + ", " + e.getValue().getDescription());
 				addRow(e.getValue());
 			});
 		} catch (Exception e2) {

@@ -14,7 +14,12 @@ public class ChainActions extends Chain<ActionContext> {
 	}
 
 	public Entry<Integer, ActionItem> addActionItem(ActionItem item) {
-		return getContext().push(item);
+		return getContext().put(item);
+	}
+
+	public Entry<Integer, ActionItem> getActionItem(ActionItem item) {
+		return getContext().getMap().entrySet().stream().filter(e -> e.getValue().equals(item)).findFirst()
+				.orElse(null);
 	}
 
 	public void removeActionItem(ActionItem item) {

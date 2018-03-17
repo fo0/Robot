@@ -3,11 +3,8 @@ package com.fo0.robot.chain.action;
 import java.io.File;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.TreeMap;
 
 import com.fo0.robot.enums.EActionType;
@@ -24,9 +21,13 @@ import lombok.Data;
 @Builder
 public class ActionContext {
 
+	@Builder.Default
 	private transient int start = 0;
+
+	@Builder.Default
 	private transient int end = 0;
 
+	@Builder.Default
 	private transient int current = 0;
 
 	@Builder.Default
@@ -42,26 +43,39 @@ public class ActionContext {
 
 	private transient ValueChangeListener outputListener;
 
-	public ActionItem push(int id, ActionItem item) {
+	public ActionItem put(int id, ActionItem item) {
+		Logger.info("adding action item: [" + (id + 1) + "/" + map.size() + "] " + item.getType() + ", "
+				+ item.getDescription());
 		return map.put(id, item);
 	}
 
-	public Entry<Integer, ActionItem> push(ActionItem item) {
-		Entry<Integer, ActionItem> tmpItem = map.entrySet().stream().filter(e -> e.getValue().equals(item)).findFirst()
-				.orElse(null);
+	public Entry<Integer, ActionItem> put(ActionItem item) {
+		Entry<Integer, ActionItem> tmpItem = getActionItem(item);
 
 		if (tmpItem != null) {
+			Logger.info("skipping push action item: [" + (tmpItem.getKey() + 1) + "/" + map.size() + "] "
+					+ tmpItem.getValue().getType() + ", " + tmpItem.getValue().getDescription());
 			return tmpItem;
 		}
 
 		int id = determineNextId();
 		map.put(id, item);
+		Logger.info("pushing action item: [" + (id + 1) + "/" + map.size() + "] " + item.getType() + ", "
+				+ item.getDescription());
 		return new SimpleEntry<Integer, ActionItem>(id, item);
 	}
 
+	public Entry<Integer, ActionItem> getActionItem(ActionItem item) {
+		return map.entrySet().stream().filter(e -> e.getValue().equals(item)).findFirst().orElse(null);
+	}
+
 	public void remove(ActionItem item) {
-		Entry<Integer, ActionItem> foundItem = map.entrySet().stream()
-				.filter(e -> e.getValue().getId().equals(item.getId())).findFirst().orElse(null);
+		Entry<Integer, ActionItem> foundItem = getActionItem(item);
+
+		if (foundItem == null) {
+			return;
+		}
+
 		map.remove(foundItem.getKey());
 		end = map.size();
 	}

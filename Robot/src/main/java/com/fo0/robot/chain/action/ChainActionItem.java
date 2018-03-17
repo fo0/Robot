@@ -47,7 +47,7 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		Entry<Integer, ActionItem> item = ctx.pop();
 
 		// info
-		Logger.info("popped action: " + item.getKey() + ", " + item.getValue());
+		Logger.info("Action[" + item.getKey() + "] " + item.getValue());
 		type = item.getValue().getType();
 		switch (type) {
 		case Commandline:
@@ -141,8 +141,10 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		try {
 			FileUtils.copyInputStreamToFile(new URL(url.getValue()).openStream(), file);
 			timer.stop();
-			ctx.addToLog(type, "Finished Download: " + file.getName() + ", Size: " + FileUtils.sizeOf(file)
-					+ ", Speed: " + Utils.humanReadableBandwith(timer.elapsed(TimeUnit.MILLISECONDS), file.length()));
+			ctx.addToLog(type,
+					"Finished Download: " + file.getName() + ", Size: "
+							+ FileUtils.byteCountToDisplaySize(FileUtils.sizeOf(file)) + ", Speed: "
+							+ Utils.humanReadableBandwith(timer.elapsed(TimeUnit.MILLISECONDS), file.length()));
 		} catch (Exception e2) {
 			ctx.addToLog(type, "failed to download: " + url.getValue());
 		} finally {
