@@ -6,7 +6,7 @@ public enum EActionType {
 
 	Commandline("Console Command"),
 
-	Download(CONSTANTS.SOURCE + "(http://myURL.myDomain/myFileDownload.exe) \n" + CONSTANTS.DESTINATION
+	Download(CONSTANTS.SOURCE + "(http(s)://myURL/myFileDownload) \n" + CONSTANTS.DESTINATION
 			+ "(/my/path/to/folder/or/file)"),
 
 	Unzip(CONSTANTS.SOURCE + "(/my/path/to/folder/or/file) \n" + CONSTANTS.DESTINATION + "(/extract/to)"),

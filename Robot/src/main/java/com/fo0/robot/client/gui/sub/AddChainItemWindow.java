@@ -31,7 +31,8 @@ public class AddChainItemWindow {
 
 	private ActionItem item;
 	private JLabel lblIDValue;
-	private JComboBox<EActionType> cbType;
+	private JComboBox<EActionType> cbGroup;
+//	private JComboBox<EActionType> cbAction;
 	private JButton btnSave;
 	private JButton btnDiscard;
 	private JLabel lblDescription;
@@ -95,9 +96,9 @@ public class AddChainItemWindow {
 		txtAction.setColumns(10);
 		JScrollPane scrollPane = new JScrollPane(txtAction);
 
-		cbType = new JComboBox<EActionType>();
-		cbType.setModel(new DefaultComboBoxModel(EActionType.values()));
-		cbType.addItemListener(e -> {
+		cbGroup = new JComboBox<EActionType>();
+		cbGroup.setModel(new DefaultComboBoxModel(EActionType.values()));
+		cbGroup.addItemListener(e -> {
 			if (e.getItem() != null) {
 				if (e.getItem() instanceof EActionType) {
 					EActionType selectedType = (EActionType) e.getItem();
@@ -106,9 +107,9 @@ public class AddChainItemWindow {
 				}
 			}
 		});
-		cbType.setBounds(126, 57, 192, 29);
-		cbType.setSelectedItem(item.getType());
-		frame.getContentPane().add(cbType);
+		cbGroup.setBounds(126, 57, 192, 29);
+		cbGroup.setSelectedItem(item.getType());
+		frame.getContentPane().add(cbGroup);
 
 		btnSave = new JButton("Save");
 		try {
@@ -120,7 +121,7 @@ public class AddChainItemWindow {
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MainGUI.addItem(ActionItem.builder().id(lblIDValue.getText())
-						.type((EActionType) cbType.getSelectedItem()).value(txtAction.getText())
+						.type((EActionType) cbGroup.getSelectedItem()).value(txtAction.getText())
 						.description(txtDescription.getText()).active(chkboxActive.isSelected()).build());
 				frame.setVisible(false);
 				frame.dispose();
