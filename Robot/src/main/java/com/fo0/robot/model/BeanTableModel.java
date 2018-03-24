@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.fo0.robot.utils.Logger;
-
 /**
  * A table model where each row represents one instance of a Java bean. When the
  * user edits a cell the model is updated.

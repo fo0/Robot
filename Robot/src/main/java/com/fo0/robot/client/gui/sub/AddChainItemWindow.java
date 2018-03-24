@@ -5,10 +5,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,10 +23,10 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import com.fo0.robot.client.gui.main.MainGUI;
+import com.fo0.robot.enums.EActionGroup;
 import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.AdvancedTextArea;
-import javax.swing.JCheckBox;
 
 public class AddChainItemWindow {
 
@@ -32,7 +36,6 @@ public class AddChainItemWindow {
 	private ActionItem item;
 	private JLabel lblIDValue;
 	private JComboBox<EActionType> cbGroup;
-//	private JComboBox<EActionType> cbAction;
 	private JButton btnSave;
 	private JButton btnDiscard;
 	private JLabel lblDescription;
@@ -106,8 +109,22 @@ public class AddChainItemWindow {
 						txtAction.setHint(selectedType.getHint());
 				}
 			}
+
+			// EActionGroup selectedItem = null;
+			// if (e.getItem() instanceof EActionGroup) {
+			// selectedItem = (EActionGroup) e.getItem();
+			//
+			// if (selectedItem == null) {
+			// return;
+			// }
+			// }
+			//
+			// List<String> entries = extractEnumConstants(selectedItem);
+			// cbActionItem.setModel(new
+			// DefaultComboBoxModel(entries.stream().toArray(String[]::new)));
+
 		});
-		cbGroup.setBounds(126, 57, 192, 29);
+		cbGroup.setBounds(126, 57, 216, 29);
 		cbGroup.setSelectedItem(item.getType());
 		frame.getContentPane().add(cbGroup);
 
@@ -182,4 +199,27 @@ public class AddChainItemWindow {
 			}
 		});
 	}
+
+	private List<String> extractEnumConstants(EActionGroup selectedItem) {
+		if (selectedItem == null)
+			return new ArrayList<String>();
+
+		try {
+			Class<? extends Enumeration> enumObj = null;
+			try {
+				enumObj = (Class<? extends Enumeration>) Class.forName(selectedItem.getHint());
+			} catch (Exception e1) {
+			}
+			List<String> entries = new ArrayList<String>();
+			for (Object string : enumObj.getEnumConstants()) {
+				entries.add(String.valueOf(string));
+			}
+
+			return entries;
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		return new ArrayList<String>();
+	}
+
 }

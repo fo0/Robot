@@ -21,7 +21,7 @@ import com.fo0.robot.chain.EChainResponse;
 import com.fo0.robot.commander.Commander;
 import com.fo0.robot.connector.FTPClient;
 import com.fo0.robot.connector.SCPClient;
-import com.fo0.robot.connector.SSHClient;
+import com.fo0.robot.connector.SimpleSSHClient;
 import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.FileTransferData;
@@ -160,10 +160,10 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		List<KeyValue> sshList = list;
 		KeyValue sshHost = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
 		KeyValue sshPort = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst()
-				.orElse(KeyValue.builder().key("PORT").value("22").build());
+				.orElse(KeyValue.builder().key("$PORT").value("22").build());
 		KeyValue sshUser = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst().orElse(null);
 		KeyValue sshPassword = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst()
-				.orElse(null);
+				.orElse(KeyValue.builder().key(CONSTANTS.PASSWORD).value("").build());
 		KeyValue sshCmd = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.CMD)).findFirst().orElse(null);
 
 		ctx.addToLog(type, "HOST: " + sshHost.getValue());
@@ -173,21 +173,23 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 				.join(IntStream.range(0, sshPassword.getValue().length()).mapToObj(e -> "*").toArray(String[]::new)));
 		ctx.addToLog(type, "CMD: " + sshCmd.getValue());
 
-		SSHClient sshClient = new SSHClient(
+		SimpleSSHClient sshClient = new SimpleSSHClient(
 				Host.builder().address(sshHost.getValue()).port(Integer.parseInt(sshPort.getValue()))
 						.username(sshUser.getValue()).password(sshPassword.getValue()).build());
 
-		sshClient.connect();
-		if (!sshClient.test()) {
-			ctx.addToLog(type, "failed to connect to Host");
+		try {
+			sshClient.connect();
+		} catch (Exception e2) {
+			ctx.addToLog(type, "failed to connect to Host " + e2);
 			return EChainResponse.Failed;
 		}
 
-		sshClient.command(sshCmd.getValue(), null, out -> {
+		sshClient.command(sshCmd.getValue(), out -> {
 			ctx.addToLogPlain(type, out);
 		}, error -> {
 			ctx.addToLogPlain(type, error);
 		});
+
 		return EChainResponse.Continue;
 	}
 
