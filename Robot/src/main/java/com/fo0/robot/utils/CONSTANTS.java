@@ -17,6 +17,11 @@ public class CONSTANTS {
 	public static final String DESTINATION = "$DST";
 
 	/**
+	 * Timings
+	 */
+	public static final String TIMEOUT = "$TIMEOUT";
+
+	/**
 	 * SSH, SCP only
 	 */
 	public static final Pattern SSH_PATTERN = BASIC_PATTERN;

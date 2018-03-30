@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
@@ -125,9 +126,12 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		KeyValue url = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
 		KeyValue path = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst().orElse(
 				KeyValue.builder().key(CONSTANTS.DESTINATION).value(FilenameUtils.getName(url.getValue())).build());
+		KeyValue timeout = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.TIMEOUT)).findFirst().orElse(
+				KeyValue.builder().key(CONSTANTS.TIMEOUT).value(String.valueOf(TimeUnit.SECONDS.toMillis(5))).build());
 
 		ctx.addToLog(type, "SRC: " + url);
 		ctx.addToLog(type, "DST: " + path);
+		ctx.addToLog(type, "TIMEOUT (sec): " + DateFormatUtils.format(Long.valueOf(timeout.getValue()), "s"));
 
 		// create file
 		File file = new File(Paths.get(path.getValue()).toAbsolutePath().toString());
@@ -139,7 +143,8 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		file.createNewFile();
 		Stopwatch timer = Stopwatch.createStarted();
 		try {
-			FileUtils.copyInputStreamToFile(new URL(url.getValue()).openStream(), file);
+			FileUtils.copyURLToFile(new URL(url.getValue()), file, Integer.valueOf(timeout.getValue()),
+					Integer.valueOf(timeout.getValue()));
 			timer.stop();
 			ctx.addToLog(type,
 					"Finished Download: " + file.getName() + ", Size: "
