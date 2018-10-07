@@ -11,16 +11,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ChainItem<T> {
 
-	@Builder.Default
 	private ChainPreCommand<T> preCommand;
 
-	@Builder.Default
 	private ChainCommand<T> command;
 
-	@Builder.Default
 	private ChainPostCommand<T> postCommand;
 
-	@Builder.Default
 	private ChainError<T> error;
 
 	@Builder.Default
