@@ -273,7 +273,7 @@ public class MainGUI {
 		mntmConfigLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				chooser.setCurrentDirectory(new File("user.dir"));
+				chooser.setCurrentDirectory(new File("."));
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Robot", "robot");
 				chooser.setFileFilter(filter);
 				int returnVal = chooser.showOpenDialog(null);
@@ -293,7 +293,7 @@ public class MainGUI {
 		mntmConfigSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				chooser.setCurrentDirectory(new File("user.dir"));
+				chooser.setCurrentDirectory(new File("."));
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Robot", "robot");
 				chooser.setFileFilter(filter);
 				int returnVal = chooser.showSaveDialog(null);

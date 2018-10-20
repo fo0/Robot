@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import com.fo0.robot.chain.Chain;
 import com.fo0.robot.chain.ChainItem;
 import com.fo0.robot.chain.ChainStateObserver;
+import com.fo0.robot.chain.EState;
 import com.fo0.robot.controller.Controller;
 import com.fo0.robot.model.ActionItem;
 import com.google.common.collect.Lists;
@@ -38,6 +39,10 @@ public class ChainActions extends Chain<ActionContext> {
 	public void notifyObservers() {
 		observers.stream().forEach(e -> e.finished(getState()));
 	}
+	
+	public void notifyObservers(EState state) {
+		observers.stream().forEach(e -> e.finished(state));
+	}
 
 	public void createChains() {
 		getChains().clear();
@@ -55,6 +60,7 @@ public class ChainActions extends Chain<ActionContext> {
 		} catch (Exception e) {
 		}
 		createChains();
+		notifyObservers(EState.Processing);
 		super.start();
 		notifyObservers();
 		getContext().reset();
