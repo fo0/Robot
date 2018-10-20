@@ -1,13 +1,18 @@
 package com.fo0.robot.chain.action;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 import com.fo0.robot.chain.Chain;
 import com.fo0.robot.chain.ChainItem;
+import com.fo0.robot.chain.ChainStateObserver;
 import com.fo0.robot.controller.Controller;
 import com.fo0.robot.model.ActionItem;
+import com.google.common.collect.Lists;
 
 public class ChainActions extends Chain<ActionContext> {
+
+	private List<ChainStateObserver> observers = Lists.newArrayList();
 
 	public ChainActions() {
 		super("Chain Actions", ActionContext.builder().build());
@@ -24,6 +29,14 @@ public class ChainActions extends Chain<ActionContext> {
 
 	public void removeActionItem(ActionItem item) {
 		getContext().remove(item);
+	}
+
+	public void addStateObserver(ChainStateObserver observer) {
+		observers.add(observer);
+	}
+
+	public void notifyObservers() {
+		observers.stream().forEach(e -> e.finished(getState()));
 	}
 
 	public void createChains() {
@@ -43,6 +56,7 @@ public class ChainActions extends Chain<ActionContext> {
 		}
 		createChains();
 		super.start();
+		notifyObservers();
 		getContext().reset();
 	}
 

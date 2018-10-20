@@ -24,6 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.fo0.robot.client.gui.observer.GUIStateObserver;
 import com.fo0.robot.client.gui.sub.AddChainItemWindow;
 import com.fo0.robot.client.gui.sub.UpdateWindow;
 import com.fo0.robot.controller.Controller;
@@ -33,6 +34,9 @@ import com.fo0.robot.model.BeanTableModelAction;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.Utils;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
 public class MainGUI {
 
@@ -43,6 +47,7 @@ public class MainGUI {
 	private static EMode currentMode = EMode.Normal;
 	private static JTextArea areaChain;
 	private static JTextArea areaConsole;
+	private static JLabel lblProcessingState;
 
 	/**
 	 * Launch the application.
@@ -178,8 +183,17 @@ public class MainGUI {
 
 			}
 		});
-		btnTgleErrors.setBounds(453, 0, 105, 24);
+		btnTgleErrors.setBounds(468, 0, 105, 24);
 		panelTop.add(btnTgleErrors);
+
+		lblProcessingState = new JLabel("STOPPED");
+		lblProcessingState.setHorizontalAlignment(SwingConstants.CENTER);
+		lblProcessingState.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblProcessingState.setOpaque(true);
+		lblProcessingState.setForeground(Color.BLACK);
+		lblProcessingState.setBackground(Color.GREEN);
+		lblProcessingState.setBounds(363, 0, 98, 25);
+		panelTop.add(lblProcessingState);
 
 		JPanel panelTable = new JPanel();
 		panelTable.setBounds(0, 26, 653, 265);
@@ -278,6 +292,7 @@ public class MainGUI {
 		mntmConfigSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new File("."));
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Robot", "robot");
 				chooser.setFileFilter(filter);
 				int returnVal = chooser.showSaveDialog(null);
@@ -315,6 +330,7 @@ public class MainGUI {
 		});
 		mnHelp.add(mntmHelpUpdate);
 		refreshTable();
+		addChainObservers();
 	}
 
 	public static void addItem(ActionItem action) {
@@ -364,6 +380,10 @@ public class MainGUI {
 		});
 	}
 
+	public static void addChainObservers() {
+		ControllerChain.getChain().addStateObserver(GUIStateObserver.builder().label(lblProcessingState).build());
+	}
+
 	/**
 	 * Enum Window Modes
 	 * 
@@ -376,5 +396,9 @@ public class MainGUI {
 
 	enum ErrorMode {
 		FailOnErr, NotFailOnErr
+	}
+
+	public enum State {
+		Processing, Finished, Error
 	}
 }
