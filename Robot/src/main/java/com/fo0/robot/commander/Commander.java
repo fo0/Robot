@@ -54,7 +54,7 @@ public class Commander {
 
 		cli.addArgument(cmds, false);
 
-		Logger.debug("HomeDir: " + homedir + " => " + StringUtils.join(cli.getArguments(), ","));
+		Logger.debug("HomeDir: \"" + homedir + "\" => " + StringUtils.join(cli.getArguments(), ","));
 
 		try {
 			executor = new DefaultExecutor();
@@ -68,7 +68,7 @@ public class Commander {
 							listener.event(str);
 						buffer.append(str);
 					} catch (Exception e) {
-						e.printStackTrace();
+						Logger.debug(e.getMessage());
 					}
 
 				}
@@ -83,7 +83,7 @@ public class Commander {
 							listener.event(str);
 						buffer.append(str);
 					} catch (Exception e) {
-						e.printStackTrace();
+						Logger.debug(e.getMessage());
 					}
 				}
 			}));
@@ -99,7 +99,7 @@ public class Commander {
 		} catch (Exception e) {
 			error = true;
 			Logger.error("failed commander in Cmd: " + cli + " | " + e);
-			e.printStackTrace();
+			Logger.debug(e.getMessage());
 		}
 		return buffer.toString();
 	}

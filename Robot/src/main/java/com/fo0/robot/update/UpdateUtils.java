@@ -1,8 +1,7 @@
-package com.fo0.robot.utils;
+package com.fo0.robot.update;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
@@ -13,44 +12,45 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
 import com.fo0.robot.main.Main;
+import com.fo0.robot.utils.CONSTANTS;
+import com.fo0.robot.utils.Logger;
+import com.fo0.robot.utils.Random;
+import com.fo0.robot.utils.Utils;
 import com.vdurmont.semver4j.Semver;
 
 public class UpdateUtils {
 
-	public static String getVersion() {
+	public static GitHubReleaseInfo getInfo() {
+		GitHubReleaseInfo info = GitHubReleaseInfo.builder().build();
 		try {
 			GitHub gitHub = GitHub.connectAnonymously();
 			GHRepository repository = gitHub.getRepository(CONSTANTS.GITHUB_URI);
 			GHRelease latest = repository.getLatestRelease();
-			return latest.getTagName().replaceAll("v", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static boolean isAvailable() {
-		try {
-			GitHub gitHub = GitHub.connectAnonymously();
-			GHRepository repository = gitHub.getRepository(CONSTANTS.GITHUB_URI);
-			GHRelease latest = repository.getLatestRelease();
+			String version = latest.getTagName().replaceAll("v", "");
+			info.setVersion(version);
+			info.setMessage(latest.getBody());
 			boolean newerVersionAvailable = new Semver(latest.getTagName().replaceAll("v", ""))
 					.isGreaterThan(new Semver(CONSTANTS.VERSION));
 			if (!newerVersionAvailable) {
 				Logger.info("no newer version available, skipping now");
 				Logger.info("current version: " + CONSTANTS.VERSION);
 				Logger.info("latest version: " + latest.getTagName().replaceAll("v", ""));
-				return false;
 			} else {
 				Logger.info("detected new version");
 				Logger.info("current version: " + CONSTANTS.VERSION);
 				Logger.info("latest version: " + latest.getTagName().replaceAll("v", ""));
-				return true;
+				info.setAvailable(true);
 			}
-		} catch (IOException e) {
+
+			return info;
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return info;
+	}
+
+	public static boolean isAvailable() {
+		return getInfo().isAvailable();
 	}
 
 	public static void doUpdate() {

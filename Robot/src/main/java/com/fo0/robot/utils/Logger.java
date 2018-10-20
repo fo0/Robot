@@ -19,7 +19,7 @@ public class Logger {
 	}
 
 	public static void debug(String message) {
-		if (Controller.getConfig() != null && Controller.getConfig().debug)
+		if (CONSTANTS.DEBUG || (Controller.getConfig() != null && Controller.getConfig().debug))
 			System.out.println("[DEBUG] " + message);
 	}
 }

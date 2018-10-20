@@ -3,6 +3,7 @@ package com.fo0.robot.client.gui.main;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -21,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -34,9 +37,6 @@ import com.fo0.robot.model.BeanTableModelAction;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.Utils;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.SwingConstants;
 
 public class MainGUI {
 
@@ -273,6 +273,7 @@ public class MainGUI {
 		mntmConfigLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new File("user.dir"));
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Robot", "robot");
 				chooser.setFileFilter(filter);
 				int returnVal = chooser.showOpenDialog(null);
@@ -292,7 +293,7 @@ public class MainGUI {
 		mntmConfigSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				chooser.setCurrentDirectory(new File("."));
+				chooser.setCurrentDirectory(new File("user.dir"));
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Robot", "robot");
 				chooser.setFileFilter(filter);
 				int returnVal = chooser.showSaveDialog(null);

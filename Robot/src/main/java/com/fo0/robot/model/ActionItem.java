@@ -12,8 +12,10 @@ import com.fo0.robot.utils.Random;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
+@ToString(exclude = { "value" })
 @EqualsAndHashCode(of = { "id" })
 @Builder
 public class ActionItem {

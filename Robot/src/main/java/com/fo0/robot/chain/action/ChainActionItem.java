@@ -50,67 +50,69 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		// info
 		Logger.info("Action[" + item.getKey() + "] " + item.getValue());
 		type = item.getValue().getType();
+
+		EChainResponse response = EChainResponse.Break;
+
 		switch (type) {
 		case Commandline:
-			Commander commander = new Commander(log -> {
-				ctx.addToLogPlain(type, log);
-			});
+			response = commandline(item.getValue().parsedValue());
+			break;
 
-			commander.execute(true, System.getProperty("user.dir"), item.getValue().getValue());
+		case COPY:
+			response = copy(item.getValue().parsedValue());
+			break;
 
-			if (commander == null || commander.isError()) {
-				ctx.addToLog(type, "error at commander: " + item.getKey());
-				return EChainResponse.Failed;
-			}
+		case MOVE:
+			response = move(item.getValue().parsedValue());
 			break;
 
 		case Download:
-			download(item.getValue().parsedValue());
+			response = download(item.getValue().parsedValue());
 			break;
 
 		case Zip:
-			zip(item.getValue().parsedValue());
+			response = zip(item.getValue().parsedValue());
 			break;
 
 		case Unzip:
-			unzip(item.getValue().parsedValue());
+			response = unzip(item.getValue().parsedValue());
 			break;
 
 		case TAR:
-			tar(item.getValue().parsedValue());
+			response = tar(item.getValue().parsedValue());
 			break;
 
 		case UNTAR:
-			untar(item.getValue().parsedValue());
+			response = untar(item.getValue().parsedValue());
 			break;
 
 		case TARGZ:
-			targz(item.getValue().parsedValue());
+			response = targz(item.getValue().parsedValue());
 			break;
 
 		case UNTARGZ:
-			untargz(item.getValue().parsedValue());
+			response = untargz(item.getValue().parsedValue());
 			break;
 
 		case SEVEN_ZIP:
-			sevenZip(item.getValue().parsedValue());
+			response = sevenZip(item.getValue().parsedValue());
 			break;
 
 		case UNSEVEN_ZIP:
-			unSevenZip(item.getValue().parsedValue());
+			response = unSevenZip(item.getValue().parsedValue());
 			break;
 
 		case SSH:
-			ssh(item.getValue().parsedValue());
+			response = ssh(item.getValue().parsedValue());
 			break;
 
 		case SCP_Download:
 		case SCP_Upload:
-			scp(item.getValue().parsedValue());
+			response = scp(item.getValue().parsedValue());
 			break;
 
 		case FTP_Download:
-			ftp(item.getValue().parsedValue());
+			response = ftp(item.getValue().parsedValue());
 			break;
 
 		default:
@@ -118,6 +120,80 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			break;
 		}
 
+		return response;
+	}
+
+	public EChainResponse commandline(List<KeyValue> list) throws Exception {
+		List<KeyValue> zipList = list;
+		KeyValue item = zipList.stream().findFirst().orElse(null);
+
+		Commander commander = new Commander(log -> {
+			ctx.addToLogPlain(type, log);
+		});
+
+		commander.execute(true, System.getProperty("user.dir"), item.getValue());
+
+		if (commander == null || commander.isError()) {
+			ctx.addToLog(type, "error at commander: " + item.getKey());
+			return EChainResponse.Failed;
+		}
+		return EChainResponse.Continue;
+	}
+
+	public EChainResponse copy(List<KeyValue> list) throws Exception {
+		List<KeyValue> zipList = list;
+		KeyValue src = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
+		KeyValue dst = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+				.orElse(KeyValue.builder().build());
+
+		ctx.addToLog(type, "SRC: " + src.getValue());
+		ctx.addToLog(type, "DST: " + dst.getValue());
+
+		// checking first path
+		if (!Paths.get(src.getValue()).toAbsolutePath().toFile().exists()) {
+			ctx.addToLog(type, "Stopping Chain. Could not find src " + Paths.get(src.getValue()).toAbsolutePath());
+			return EChainResponse.Failed;
+		}
+
+		FileUtils.copyFile(Paths.get(src.getValue()).toAbsolutePath().toFile(),
+				Paths.get(dst.getValue()).toAbsolutePath().toFile());
+		return EChainResponse.Continue;
+	}
+
+	public EChainResponse move(List<KeyValue> list) throws Exception {
+		List<KeyValue> zipList = list;
+		KeyValue src = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
+		KeyValue dst = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+				.orElse(KeyValue.builder().build());
+		KeyValue force = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.FORCE)).findFirst()
+				.orElse(KeyValue.builder().value("false").build());
+
+		ctx.addToLog(type, "SRC: " + src.getValue());
+		ctx.addToLog(type, "DST: " + dst.getValue());
+		ctx.addToLog(type, "FORCE: " + force.getValue());
+
+		// checking first path
+		if (!Paths.get(src.getValue()).toAbsolutePath().toFile().exists()) {
+			ctx.addToLog(type, "Stopping Chain. Could not find src: " + Paths.get(src.getValue()).toAbsolutePath());
+			return EChainResponse.Break;
+		}
+
+		if (Paths.get(dst.getValue()).toAbsolutePath().toFile().exists()) {
+			if (StringUtils.equalsAnyIgnoreCase(force.getValue(), "true")) {
+				// force :: remove destination file
+				ctx.addToLog(type,
+						"found destination file or folder. Force option has been found, deleting the destination: "
+								+ Paths.get(dst.getValue()).toAbsolutePath());
+				FileUtils.forceDelete(Paths.get(dst.getValue()).toAbsolutePath().toFile());
+			} else {
+				ctx.addToLog(type, "Stopping Chain. Destination File exists already and no force has been set."
+						+ Paths.get(dst.getValue()).toAbsolutePath());
+				return EChainResponse.Failed;
+			}
+		}
+
+		FileUtils.moveFile(Paths.get(src.getValue()).toAbsolutePath().toFile(),
+				Paths.get(dst.getValue()).toAbsolutePath().toFile());
 		return EChainResponse.Continue;
 	}
 

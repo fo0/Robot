@@ -6,6 +6,10 @@ public enum EActionType {
 
 	Commandline("Console Command"),
 
+	COPY(CONSTANTS.SOURCE + "(/copy/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
+	
+	MOVE(CONSTANTS.SOURCE + "(/move/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
+	
 	Download(CONSTANTS.SOURCE + "(http(s)://myURL/myFileDownload) \n" + CONSTANTS.DESTINATION
 			+ "([OPT] /my/path/to/folder/or/file)\n" + CONSTANTS.TIMEOUT + "([OPT] connection timeout in ms)"),
 

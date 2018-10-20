@@ -9,7 +9,6 @@ import org.apache.commons.net.ftp.FTP;
 import com.fo0.robot.model.FileTransferData;
 import com.fo0.robot.model.Host;
 import com.fo0.robot.utils.Logger;
-import com.google.common.base.Stopwatch;
 
 public class FTPClient {
 

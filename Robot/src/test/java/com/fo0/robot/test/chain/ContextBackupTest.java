@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.fo0.robot.chain.EState;
 import com.fo0.robot.chain.action.ChainActions;
+import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.utils.Logger;
 
@@ -18,7 +19,8 @@ public class ContextBackupTest {
 	@Test
 	public void saveContext() {
 		ChainActions actions = new ChainActions();
-		actions.addActionItem(ActionItem.builder().value("echo lol").description("description example").build());
+		actions.addActionItem(ActionItem.builder().type(EActionType.Commandline).value("echo lol")
+				.description("description example").build());
 		actions.start();
 		Assert.assertEquals(EState.Success, actions.getState());
 
