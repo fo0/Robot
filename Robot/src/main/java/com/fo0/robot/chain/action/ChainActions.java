@@ -39,7 +39,7 @@ public class ChainActions extends Chain<ActionContext> {
 	public void notifyObservers() {
 		observers.stream().forEach(e -> e.finished(getState()));
 	}
-	
+
 	public void notifyObservers(EState state) {
 		observers.stream().forEach(e -> e.finished(state));
 	}
