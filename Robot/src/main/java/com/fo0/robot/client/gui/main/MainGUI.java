@@ -67,7 +67,7 @@ public class MainGUI {
 			frame.setSize(655, 339);
 			break;
 
-		case Console:
+		case ConsoleMaximized:
 			frame.setSize(655, 528);
 			break;
 		}
@@ -127,7 +127,7 @@ public class MainGUI {
 					});
 
 					SwingUtilities.invokeLater(() -> {
-						toggleConsole(EMode.Console);
+						toggleConsole(EMode.ConsoleMaximized);
 					});
 
 					Utils.sleep(TimeUnit.MILLISECONDS, 200);
@@ -156,10 +156,10 @@ public class MainGUI {
 		JButton buttonToggleConsole = new JButton(">_");
 		buttonToggleConsole.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (currentMode == EMode.Console) {
+				if (currentMode == EMode.ConsoleMaximized) {
 					toggleConsole(EMode.Normal);
 				} else {
-					toggleConsole(EMode.Console);
+					toggleConsole(EMode.ConsoleMaximized);
 				}
 			}
 		});
@@ -392,7 +392,7 @@ public class MainGUI {
 	 *
 	 */
 	enum EMode {
-		Normal, Console
+		Normal, ConsoleMaximized
 	}
 
 	enum ErrorMode {
