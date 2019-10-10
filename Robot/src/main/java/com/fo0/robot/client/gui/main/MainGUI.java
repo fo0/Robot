@@ -293,7 +293,13 @@ public class MainGUI {
 		mntmConfigSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				chooser.setCurrentDirectory(new File("."));
+
+				String lastPathDetection = ".";
+				if (!Controller.getConfig().configFile.isEmpty()) {
+					lastPathDetection = Controller.getConfig().configFile;
+				}
+
+				chooser.setCurrentDirectory(new File(lastPathDetection));
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Robot", "robot");
 				chooser.setFileFilter(filter);
 				int returnVal = chooser.showSaveDialog(null);

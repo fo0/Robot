@@ -3,9 +3,14 @@ package com.fo0.robot.chain.action;
 import java.io.File;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.listener.DispatchListener;
@@ -168,14 +173,32 @@ public class ActionContext {
 
 	public void save(String path) {
 		Logger.info("saving config-file: " + path);
-		Parser.write(this, new File(path));
+		if (this.getMap() != null && this.getMap().values().isEmpty()) {
+			Logger.debug("could not find any items for save: " + path);
+			return;
+		}
+
+		Parser.write(getMap().values(), new File(path));
 	}
 
 	public void load(String path) {
-		ActionContext ctx = Parser.read(new File(path), ActionContext.class);
+		List<ActionItem> actionItems = Parser.parseList(new File(path), ActionItem.class);
 
-		if (ctx == null) {
+		if (actionItems == null || actionItems.isEmpty()) {
 			Logger.error("failed to load context from file: " + path);
+			return;
+		}
+
+		//@formatter:off
+		ActionContext ctx = ActionContext.builder()
+				.map(IntStream.range(0, actionItems.size())
+						.mapToObj(e -> Pair.of(e, actionItems.get(e)))
+						.collect(Collectors.toMap(Entry::getKey, Entry::getValue)))
+				.build();
+		//@formatter:on
+
+		if (ctx == null || ctx.getMap() == null || ctx.getMap().isEmpty()) {
+			Logger.error("failed to loaded items to context: " + path);
 			return;
 		}
 
