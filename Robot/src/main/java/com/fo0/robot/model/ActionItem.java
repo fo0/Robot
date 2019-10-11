@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import com.fo0.robot.enums.EActionType;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Random;
+import com.google.common.collect.Lists;
 
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@ToString(exclude = { "value" })
+@ToString(exclude = { "type", "value" })
 @EqualsAndHashCode(of = { "id" })
 @Builder
 public class ActionItem {
@@ -26,17 +27,15 @@ public class ActionItem {
 	@Builder.Default
 	private EActionType type = EActionType.Commandline;
 
-	@Builder.Default
 	private String description;
 
-	@Builder.Default
 	private String value;
 
 	@Builder.Default
 	private boolean active = true;
 
 	public List<KeyValue> parsedValue() {
-		List<KeyValue> list = new ArrayList<KeyValue>();
+		List<KeyValue> list = Lists.newArrayList();
 		switch (type) {
 		case Commandline:
 			// detected cmd ... do safety skip
