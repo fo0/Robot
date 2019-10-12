@@ -4,15 +4,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fo0.robot.client.gui.main.MainGUI;
 import com.fo0.robot.config.Config;
+import com.fo0.robot.config.ConfigManager;
 import com.fo0.robot.config.ConfigParser;
-import com.fo0.robot.update.UpdateUtils;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Logger;
 
 public class Controller {
 
 	public static String[] arg;
-	private static Config config = null;
+	public static Config config = null;
 	private static MainGUI gui = null;
 
 	public static void bootstrap(String[] args) {
@@ -27,7 +27,7 @@ public class Controller {
 		// apply the config options
 		modules();
 
-		applyConfig();
+		ConfigManager.applyConfig();
 	}
 
 	private static void startUpMessage() {
@@ -43,45 +43,6 @@ public class Controller {
 
 	private static void modules() {
 		ControllerChain.bootstrap();
-	}
-
-	private static void applyConfig() {
-		if (config.configFile != null && !config.configFile.isEmpty()) {
-			ControllerChain.getChain().getContext().loadFromFile(config.configFile);
-		}
-
-		// "[{\"id\":\"7HB23fC8dI\",\"type\":\"COPY\",\"description\":\"COPY file\",\"value\":\"$SRC(robot.jar) $DST(robot2.jar)\",\"active\":true}]"
-		
-		if (StringUtils.isNotBlank(config.config)) {
-			// using config via direct load in
-			ControllerChain.getChain().getContext().load(config.config);
-		}
-
-		if (!config.nogui) {
-			MainGUI.bootstrap();
-		} else {
-			// update function, take care of loop
-			if (config.update) {
-				Logger.info("detected update mode, starting updater");
-				if (UpdateUtils.isAvailable()) {
-					Logger.info("new update available, performing update now");
-					UpdateUtils.doUpdate();
-				}
-			}
-		}
-
-		// detect if cli and path set, automatically execute chain
-		if (config.nogui && config.configFile != null && !config.configFile.isEmpty()) {
-			Logger.info("detected cli mode - automatically started chain");
-			ControllerChain.getChain().start();
-		}
-
-		// exiting if nogui and no cfg
-		if (config.nogui && (config.configFile == null || config.configFile.isEmpty())) {
-			Logger.info("detected cli mode, but no config - exiting now");
-			System.exit(0);
-		}
-
 	}
 
 	public static Config getConfig() {
