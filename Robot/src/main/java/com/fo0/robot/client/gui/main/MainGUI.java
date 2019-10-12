@@ -281,7 +281,7 @@ public class MainGUI {
 					File file = chooser.getSelectedFile();
 
 					// load config from disk -> file
-					ControllerChain.getChain().getContext().load(file.getAbsolutePath());
+					ControllerChain.getChain().getContext().loadFromFile(file.getAbsolutePath());
 					MainGUI.getTableModel().loadActionContextFromController();
 				}
 

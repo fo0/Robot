@@ -11,6 +11,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -70,6 +72,27 @@ public class Parser {
 			}
 		}
 
+		return null;
+	}
+
+	public static <T> T parse(String json, Class<T> _Class) {
+		return parse(json, TypeToken.getParameterized(_Class).getType());
+	}
+
+	public static <T> List<T> parseList(String json, Class<T> _Class) {
+		if (StringUtils.isEmpty(json)) {
+			return null;
+		}
+
+		return parse(json, TypeToken.getParameterized(ArrayList.class, _Class).getType());
+	}
+
+	public static <T> T parse(String json, Type type) {
+		try {
+			return new Gson().fromJson(json, type);
+		} catch (Exception e) {
+			Logger.error("failed to parse json string: " + json + " " + e);
+		}
 		return null;
 	}
 

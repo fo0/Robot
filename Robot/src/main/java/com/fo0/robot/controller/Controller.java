@@ -47,7 +47,14 @@ public class Controller {
 
 	private static void applyConfig() {
 		if (config.configFile != null && !config.configFile.isEmpty()) {
-			ControllerChain.getChain().getContext().load(config.configFile);
+			ControllerChain.getChain().getContext().loadFromFile(config.configFile);
+		}
+
+		// "[{\"id\":\"7HB23fC8dI\",\"type\":\"COPY\",\"description\":\"COPY file\",\"value\":\"$SRC(robot.jar) $DST(robot2.jar)\",\"active\":true}]"
+		
+		if (StringUtils.isNotBlank(config.config)) {
+			// using config via direct load in
+			ControllerChain.getChain().getContext().load(config.config);
 		}
 
 		if (!config.nogui) {

@@ -8,7 +8,10 @@ public class Config extends OptionsBase {
 	@Option(name = "nogui", abbrev = 'n', category = "GUI", help = "Graphical User Interface", defaultValue = "false")
 	public boolean nogui;
 
-	@Option(name = "config", abbrev = 'c', category = "Config", help = "Read config by Path", defaultValue = "")
+	@Option(name = "config", abbrev = 'c', category = "Config", help = "Read Plain-Config", defaultValue = "")
+	public String config;
+
+	@Option(name = "configFile", abbrev = 'f', category = "Config", help = "Read Config-File by Path", defaultValue = "")
 	public String configFile;
 
 	@Option(name = "verbose", abbrev = 'v', category = "Verbose", help = "Debug Log Level", defaultValue = "false")

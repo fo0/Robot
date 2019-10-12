@@ -18,6 +18,7 @@ import com.fo0.robot.listener.ValueChangeListener;
 import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.Parser;
+import com.google.gson.Gson;
 
 import lombok.Builder;
 import lombok.Data;
@@ -181,11 +182,11 @@ public class ActionContext {
 		Parser.write(getMap().values(), new File(path));
 	}
 
-	public void load(String path) {
-		List<ActionItem> actionItems = Parser.parseList(new File(path), ActionItem.class);
+	public void load(String actionItemConfigJson) {
+		List<ActionItem> actionItems = Parser.parseList(actionItemConfigJson, ActionItem.class);
 
 		if (actionItems == null || actionItems.isEmpty()) {
-			Logger.error("failed to load context from file: " + path);
+			Logger.error("failed to load context from file: " + actionItemConfigJson);
 			return;
 		}
 
@@ -198,7 +199,7 @@ public class ActionContext {
 		//@formatter:on
 
 		if (ctx == null || ctx.getMap() == null || ctx.getMap().isEmpty()) {
-			Logger.error("failed to loaded items to context: " + path);
+			Logger.error("failed to loaded items to context: " + actionItemConfigJson);
 			return;
 		}
 
@@ -211,10 +212,15 @@ public class ActionContext {
 			getMap().clear();
 			getMap().putAll(ctx.getMap());
 
-			Logger.info("loading config-file: " + path + ", Success: " + (ctx != null ? "true" : "false"));
+			Logger.info(
+					"loading config-file: " + actionItemConfigJson + ", Success: " + (ctx != null ? "true" : "false"));
 		} catch (Exception e) {
 			clear();
 			Logger.error("loading config-file failed, clear context");
 		}
+	}
+
+	public void loadFromFile(String path) {
+		load(new Gson().toJson(Parser.parseList(new File(path), ActionItem.class)));
 	}
 }
