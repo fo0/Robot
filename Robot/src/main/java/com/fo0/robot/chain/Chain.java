@@ -241,8 +241,11 @@ public class Chain<T> {
 			e.getValue().getData().getState().setState(EState.Success);
 		}
 
-		if (state != EState.Failed)
+		if (state != EState.Failed) {
 			state = EState.Success;
+		}
+
+		Logger.info("finished chain: " + id + ", with ExitState: " + state);
 	}
 
 	public String getID() {
