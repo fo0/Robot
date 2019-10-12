@@ -7,9 +7,10 @@ public enum EActionType {
 	Commandline("Console Command"),
 
 	COPY(CONSTANTS.SOURCE + "(/copy/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
-	
-	MOVE(CONSTANTS.SOURCE + "(/move/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
-	
+
+	MOVE(CONSTANTS.SOURCE + "(/move/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination) \n"
+			+ CONSTANTS.FORCE + "([OPT] overwrite: true|false))"),
+
 	Download(CONSTANTS.SOURCE + "(http(s)://myURL/myFileDownload) \n" + CONSTANTS.DESTINATION
 			+ "([OPT] /my/path/to/folder/or/file)\n" + CONSTANTS.TIMEOUT + "([OPT] connection timeout in ms)"),
 
@@ -29,8 +30,8 @@ public enum EActionType {
 
 	UNSEVEN_ZIP(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
 
-	SSH(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "([OPT] port)\n" + CONSTANTS.USER + "(user)\n" + CONSTANTS.PASSWORD
-			+ "(Password)\n" + CONSTANTS.CMD + "(CMD)"),
+	SSH(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "([OPT] port)\n" + CONSTANTS.USER + "(user)\n"
+			+ CONSTANTS.PASSWORD + "(Password)\n" + CONSTANTS.CMD + "(CMD)"),
 
 	SCP_Upload(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "([OPT] port)\n" + CONSTANTS.USER + "(user)\n"
 			+ CONSTANTS.PASSWORD + "(Password)\n" + CONSTANTS.SOURCE + "(localPath) \n" + CONSTANTS.DESTINATION
