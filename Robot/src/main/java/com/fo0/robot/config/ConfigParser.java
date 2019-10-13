@@ -15,8 +15,7 @@ public class ConfigParser {
 
 	private static void printUsage(OptionsParser parser) {
 		System.out.println("Usage: java -jar robot.jar OPTIONS");
-		System.out.println(
-				parser.describeOptions(Collections.<String, String>emptyMap(), OptionsParser.HelpVerbosity.LONG));
+		System.out.println(parser.describeOptions(Collections.<String, String>emptyMap(), OptionsParser.HelpVerbosity.LONG));
 	}
 
 }
