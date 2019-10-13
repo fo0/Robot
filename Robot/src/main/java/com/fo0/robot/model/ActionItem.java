@@ -1,6 +1,5 @@
 package com.fo0.robot.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,6 +41,10 @@ public class ActionItem {
 			list.add(KeyValue.builder().key(type.name()).value(value).build());
 			break;
 
+		case Sleep:
+			list.add(KeyValue.builder().key(type.name()).value(value).build());
+			break;
+			
 		default:
 			// doing basic parsing
 			Pattern p = CONSTANTS.BASIC_PATTERN;

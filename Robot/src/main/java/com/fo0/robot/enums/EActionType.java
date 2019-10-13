@@ -5,6 +5,8 @@ import com.fo0.robot.utils.CONSTANTS;
 public enum EActionType {
 
 	Commandline("Console Command"),
+	
+	Sleep("In milliseconds"),
 
 	COPY(CONSTANTS.SOURCE + "(/copy/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
 

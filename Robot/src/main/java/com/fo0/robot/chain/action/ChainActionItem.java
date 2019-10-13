@@ -58,6 +58,10 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			response = commandline(item.getValue().parsedValue());
 			break;
 
+		case Sleep:
+			response = sleep(item.getValue().parsedValue());
+			break;
+
 		case COPY:
 			response = copy(item.getValue().parsedValue());
 			break;
@@ -137,6 +141,20 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			ctx.addToLog(type, "error at commander: " + item.getKey());
 			return EChainResponse.Failed;
 		}
+
+		return EChainResponse.Continue;
+	}
+
+	private EChainResponse sleep(List<KeyValue> list) {
+		List<KeyValue> zipList = list;
+		KeyValue item = zipList.stream().findFirst().orElse(null);
+
+		ctx.addToLog(type, "Sleep (ms): " + item.getValue());
+
+		ctx.addToLog(type, "start sleep (ms): " + item.getValue());
+		Utils.sleep(Long.valueOf(item.getValue()));
+		ctx.addToLog(type, "stopped sleep (ms): " + item.getValue());
+
 		return EChainResponse.Continue;
 	}
 
