@@ -10,6 +10,12 @@ import com.fo0.robot.utils.Logger;
 
 public class ConfigManager {
 
+	public static void applyConfigLoggingOption() {
+		if (Controller.config.logFile) {
+			Logger.activateFileLogging();
+		}
+	}
+
 	public static void applyConfig() {
 		if (Controller.config.configFile != null && !Controller.config.configFile.isEmpty()) {
 			ControllerChain.getChain().getContext().loadFromFile(Controller.config.configFile);

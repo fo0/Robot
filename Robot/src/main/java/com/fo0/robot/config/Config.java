@@ -17,9 +17,13 @@ public class Config extends OptionsBase {
 	@Option(name = "verbose", abbrev = 'v', category = "Verbose", help = "Debug Log Level", defaultValue = "false")
 	public boolean debug;
 
+	@Option(name = "logfile", abbrev = 'l', category = "Verbose", help = "Logging to File 'robot.log'", defaultValue = "false")
+	public boolean logFile;
+
 	@Option(name = "ignoreErrors", abbrev = 'i', category = "Errors", help = "Ignore Errors in Chain", defaultValue = "false")
 	public boolean ignoreErrors;
 
 	@Option(name = "update", abbrev = 'u', category = "Update", help = "Download Updates if needed", defaultValue = "false")
 	public boolean update;
+
 }

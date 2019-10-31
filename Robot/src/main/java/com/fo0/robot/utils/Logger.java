@@ -1,5 +1,7 @@
 package com.fo0.robot.utils;
 
+import java.util.Date;
+
 import com.fo0.robot.controller.Controller;
 
 /**
@@ -10,16 +12,36 @@ import com.fo0.robot.controller.Controller;
  */
 public class Logger {
 
+	public static FileLog log = null;
+
 	public static void info(String message) {
-		System.out.println("[INFO] " + message);
+		String msg = "[INFO] " + message;
+		System.out.println(msg);
+		addToLog(msg);
 	}
 
 	public static void error(String message) {
-		System.err.println("[ERROR] " + message);
+		String msg = "[ERROR] " + message;
+		System.err.println(msg);
+		addToLog(msg);
 	}
 
 	public static void debug(String message) {
+		String msg = "[DEBUG] " + message;
 		if (CONSTANTS.DEBUG || (Controller.getConfig() != null && Controller.getConfig().debug))
-			System.out.println("[DEBUG] " + message);
+			System.out.println(msg);
+
+		addToLog(msg);
+	}
+
+	private static void addToLog(String message) {
+		if (log != null) {
+			log.add(message);
+		}
+	}
+
+	public static void activateFileLogging() {
+		log = new FileLog();
+		info("Activated File-Logging to: 'robot.log'");
 	}
 }

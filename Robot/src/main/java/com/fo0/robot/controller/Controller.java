@@ -20,6 +20,7 @@ public class Controller {
 
 		// parse args for config
 		config = ConfigParser.parseConfig(args);
+		ConfigManager.applyConfigLoggingOption();
 
 		// startup message
 		startUpMessage();
@@ -41,7 +42,17 @@ public class Controller {
 		Logger.info("##############################################");
 	}
 
+	private static void addShutdownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			Logger.info("Shutting down Robot...");
+			if (Logger.log != null) {
+				Logger.log.flush();
+			}
+		}));
+	}
+
 	private static void modules() {
+		addShutdownHook();
 		ControllerChain.bootstrap();
 	}
 
