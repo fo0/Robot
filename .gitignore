@@ -1,22 +1,72 @@
-# Compiled class file
-*.class
+# ============ Java & Eclipse .gitignore :: recursive ============
+# NEVER IGNORE .GITIGNORE
+!.gitignore
 
-# Log file
-*.log
+# recursive ignores (delete everywhere)
+**.class
+**.log.gz
+**.log
+**/target
+**/src/main/resources/version.properties
 
-# BlueJ files
-*.ctxt
+# ============ Java & Eclipse .gitignore ============
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+.classpath
 
-# Package Files #
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
+# External tool builders
+.externalToolBuilders/
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# PyDev specific (Python IDE for Eclipse)
+*.pydevproject
+
+# CDT-specific (C/C++ Development Tooling)
+.cproject
+
+# CDT- autotools 
+.autotools
+
+# Java annotation processor (APT)
+.factorypath
+
+# PDT-specific (PHP Development Tools)
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# Tern plugin
+.tern-project
+
+# TeXlipse plugin
+.texlipse
+
+# STS (Spring Tool Suite)
+.springBeans
+
+# Code Recommenders
+.recommenders/
+
+# Scala IDE specific (Scala & Java development for Eclipse)
+.cache-main
+.scala_dependencies
+.worksheet
