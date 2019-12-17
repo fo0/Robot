@@ -3,8 +3,9 @@ package com.fo0.robot.commander;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -58,14 +59,15 @@ public class Commander {
 				}
 				break;
 			}
-			
+
 			cli.addArguments(cmds.stream().toArray(String[]::new), quoting);
 		} else {
 			cli = new CommandLine(cmds.get(0));
 			cli.addArguments(cmds.stream().skip(1).toArray(String[]::new), quoting);
 		}
 
-		Logger.debug("HomeDir: \"" + homedir + "\" => " + StringUtils.join(cli.getArguments(), ","));
+		Logger.debug("HomeDir: \"" + Paths.get(homedir).toAbsolutePath() + "\" => " + cli.getExecutable() + ", "
+				+ StringUtils.join(cli.getArguments(), ","));
 
 		try {
 			executor = new DefaultExecutor();
@@ -98,13 +100,13 @@ public class Commander {
 					}
 				}
 			}));
-			executor.execute(cli);
+
 			executor.setWorkingDirectory(new File(homedir));
+			executor.execute(cli);
 
 			try {
-				executor.wait(30 * 1000);
+				executor.wait(TimeUnit.SECONDS.toMillis(30));
 			} catch (Exception e) {
-				// TODO: handle exception
 			}
 
 		} catch (Exception e) {
