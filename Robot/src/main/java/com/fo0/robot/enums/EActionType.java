@@ -1,50 +1,52 @@
 package com.fo0.robot.enums;
 
-import com.fo0.robot.utils.CONSTANTS;
+import com.fo0.robot.utils.CONSTANTS_PATTERN;
 
 public enum EActionType {
 
-	Commandline("Console Command"),
+	Simple_Commandline("Console Command"),
+	
+	Commandline(CONSTANTS_PATTERN.HOME + "([OPT] HomeDir)\n" + CONSTANTS_PATTERN.CMDS + "(Cmd1,Cmd2,...,CmdN)"),
 	
 	Sleep("In milliseconds"),
 
-	COPY(CONSTANTS.SOURCE + "(/copy/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
+	COPY(CONSTANTS_PATTERN.SOURCE + "(/copy/this/file) \n" + CONSTANTS_PATTERN.DESTINATION + "(/path/to/destination)"),
 
-	MOVE(CONSTANTS.SOURCE + "(/move/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination) \n"
-			+ CONSTANTS.FORCE + "([OPT] overwrite: true|false))"),
+	MOVE(CONSTANTS_PATTERN.SOURCE + "(/move/this/file) \n" + CONSTANTS_PATTERN.DESTINATION + "(/path/to/destination) \n"
+			+ CONSTANTS_PATTERN.FORCE + "([OPT] overwrite: true|false))"),
 
-	Download(CONSTANTS.SOURCE + "(http(s)://myURL/myFileDownload) \n" + CONSTANTS.DESTINATION
-			+ "([OPT] /my/path/to/folder/or/file)\n" + CONSTANTS.TIMEOUT + "([OPT] connection timeout in ms)"),
+	Download(CONSTANTS_PATTERN.SOURCE + "(http(s)://myURL/myFileDownload) \n" + CONSTANTS_PATTERN.DESTINATION
+			+ "([OPT] /my/path/to/folder/or/file)\n" + CONSTANTS_PATTERN.TIMEOUT + "([OPT] connection timeout in ms)"),
 
-	Unzip(CONSTANTS.SOURCE + "(/my/path/to/folder/or/file) \n" + CONSTANTS.DESTINATION + "(/extract/to)"),
+	Unzip(CONSTANTS_PATTERN.SOURCE + "(/my/path/to/folder/or/file) \n" + CONSTANTS_PATTERN.DESTINATION + "(/extract/to)"),
 
-	Zip(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
+	Zip(CONSTANTS_PATTERN.SOURCE + "(/compress/this/file) \n" + CONSTANTS_PATTERN.DESTINATION + "(/path/to/destination)"),
 
-	TAR(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "([OPT] /path/to/destination)"),
+	TAR(CONSTANTS_PATTERN.SOURCE + "(/compress/this/file) \n" + CONSTANTS_PATTERN.DESTINATION + "([OPT] /path/to/destination)"),
 
-	UNTAR(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
+	UNTAR(CONSTANTS_PATTERN.SOURCE + "(/compress/this/file) \n" + CONSTANTS_PATTERN.DESTINATION + "(/path/to/destination)"),
 
-	TARGZ(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
+	TARGZ(CONSTANTS_PATTERN.SOURCE + "(/compress/this/file) \n" + CONSTANTS_PATTERN.DESTINATION + "(/path/to/destination)"),
 
-	UNTARGZ(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
+	UNTARGZ(CONSTANTS_PATTERN.SOURCE + "(/compress/this/file) \n" + CONSTANTS_PATTERN.DESTINATION + "(/path/to/destination)"),
 
-	SEVEN_ZIP(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
+	SEVEN_ZIP(CONSTANTS_PATTERN.SOURCE + "(/compress/this/file) \n" + CONSTANTS_PATTERN.DESTINATION + "(/path/to/destination)"),
 
-	UNSEVEN_ZIP(CONSTANTS.SOURCE + "(/compress/this/file) \n" + CONSTANTS.DESTINATION + "(/path/to/destination)"),
+	UNSEVEN_ZIP(CONSTANTS_PATTERN.SOURCE + "(/compress/this/file) \n" + CONSTANTS_PATTERN.DESTINATION + "(/path/to/destination)"),
 
-	SSH(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "([OPT] port)\n" + CONSTANTS.USER + "(user)\n"
-			+ CONSTANTS.PASSWORD + "(Password)\n" + CONSTANTS.CMD + "(CMD)"),
+	SSH(CONSTANTS_PATTERN.HOST + "(yourHost)\n" + CONSTANTS_PATTERN.PORT + "([OPT] port)\n" + CONSTANTS_PATTERN.USER + "(user)\n"
+			+ CONSTANTS_PATTERN.PASSWORD + "(Password)\n" + CONSTANTS_PATTERN.CMD + "(CMD)"),
 
-	SCP_Upload(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "([OPT] port)\n" + CONSTANTS.USER + "(user)\n"
-			+ CONSTANTS.PASSWORD + "(Password)\n" + CONSTANTS.SOURCE + "(localPath) \n" + CONSTANTS.DESTINATION
+	SCP_Upload(CONSTANTS_PATTERN.HOST + "(yourHost)\n" + CONSTANTS_PATTERN.PORT + "([OPT] port)\n" + CONSTANTS_PATTERN.USER + "(user)\n"
+			+ CONSTANTS_PATTERN.PASSWORD + "(Password)\n" + CONSTANTS_PATTERN.SOURCE + "(localPath) \n" + CONSTANTS_PATTERN.DESTINATION
 			+ "(remotePath)"),
 
-	SCP_Download(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "([OPT] port)\n" + CONSTANTS.USER + "(user)\n"
-			+ CONSTANTS.PASSWORD + "(Password)\n" + CONSTANTS.SOURCE + "(remotePath) \n" + CONSTANTS.DESTINATION
+	SCP_Download(CONSTANTS_PATTERN.HOST + "(yourHost)\n" + CONSTANTS_PATTERN.PORT + "([OPT] port)\n" + CONSTANTS_PATTERN.USER + "(user)\n"
+			+ CONSTANTS_PATTERN.PASSWORD + "(Password)\n" + CONSTANTS_PATTERN.SOURCE + "(remotePath) \n" + CONSTANTS_PATTERN.DESTINATION
 			+ "(localPath)"),
 
-	FTP_Download(CONSTANTS.HOST + "(yourHost)\n" + CONSTANTS.PORT + "([OPT] port)\n" + CONSTANTS.USER + "([OPT] user)\n"
-			+ CONSTANTS.PASSWORD + "(Password)\n" + CONSTANTS.SOURCE + "(remoteFileName) \n" + CONSTANTS.DESTINATION
+	FTP_Download(CONSTANTS_PATTERN.HOST + "(yourHost)\n" + CONSTANTS_PATTERN.PORT + "([OPT] port)\n" + CONSTANTS_PATTERN.USER + "([OPT] user)\n"
+			+ CONSTANTS_PATTERN.PASSWORD + "(Password)\n" + CONSTANTS_PATTERN.SOURCE + "(remoteFileName) \n" + CONSTANTS_PATTERN.DESTINATION
 			+ "(localPath)");
 
 	private String hint;

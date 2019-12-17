@@ -25,5 +25,11 @@ public class Config extends OptionsBase {
 
 	@Option(name = "update", abbrev = 'u', category = "Update", help = "Download Updates if needed", defaultValue = "false")
 	public boolean update;
+	
+	/**
+	 * PATTERN VARIABLE
+	 */
+	@Option(name = "variable-pattern", abbrev = 'p', category = "Variable", help = "Variable Pattern", defaultValue = "$")
+	public String variable;
 
 }

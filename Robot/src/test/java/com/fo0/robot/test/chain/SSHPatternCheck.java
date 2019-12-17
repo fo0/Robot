@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.fo0.robot.model.KeyValue;
-import com.fo0.robot.utils.CONSTANTS;
+import com.fo0.robot.utils.CONSTANTS_PATTERN;
 
 public class SSHPatternCheck {
 
@@ -17,7 +17,7 @@ public class SSHPatternCheck {
 	public void parsingSSHInputText() {
 		String inputText = "$HOST(github.com) $PORT(22) $CMD(echo test)";
 
-		Pattern pattern = CONSTANTS.BASIC_PATTERN;
+		Pattern pattern = CONSTANTS_PATTERN.BASIC_PATTERN;
 		Matcher m = pattern.matcher(inputText);
 
 		List<KeyValue> list = new ArrayList<KeyValue>();
@@ -26,9 +26,9 @@ public class SSHPatternCheck {
 			list.add(KeyValue.builder().key(m.group(1)).value(m.group(2)).build());
 		}
 
-		KeyValue host = list.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
-		KeyValue port = list.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst().orElse(null);
-		KeyValue cmd = list.stream().filter(e -> e.getKey().equals(CONSTANTS.CMD)).findFirst().orElse(null);
+		KeyValue host = list.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.HOST)).findFirst().orElse(null);
+		KeyValue port = list.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.PORT)).findFirst().orElse(null);
+		KeyValue cmd = list.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.CMD)).findFirst().orElse(null);
 
 		Assert.assertEquals(host.getValue(), "github.com");
 		Assert.assertEquals(port.getValue(), "22");
@@ -43,7 +43,7 @@ public class SSHPatternCheck {
 		String inputText = "$HOST(github.com) " + "$PORT(21) " + "$USER(root) " + "$PASSWORD(example) "
 				+ "$SRC(/root/test) " + "$DST(/home/max/git/Robot/Robot/test/test)";
 
-		Pattern pattern = CONSTANTS.BASIC_PATTERN;
+		Pattern pattern = CONSTANTS_PATTERN.BASIC_PATTERN;
 		Matcher m = pattern.matcher(inputText);
 
 		List<KeyValue> list = new ArrayList<KeyValue>();
@@ -52,12 +52,12 @@ public class SSHPatternCheck {
 			list.add(KeyValue.builder().key(m.group(1)).value(m.group(2)).build());
 		}
 
-		KeyValue host = list.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
-		KeyValue port = list.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst().orElse(null);
-		KeyValue user = list.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst().orElse(null);
-		KeyValue password = list.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst().orElse(null);
-		KeyValue src = list.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-		KeyValue dst = list.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst().orElse(null);
+		KeyValue host = list.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.HOST)).findFirst().orElse(null);
+		KeyValue port = list.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.PORT)).findFirst().orElse(null);
+		KeyValue user = list.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.USER)).findFirst().orElse(null);
+		KeyValue password = list.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.PASSWORD)).findFirst().orElse(null);
+		KeyValue src = list.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst().orElse(null);
+		KeyValue dst = list.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst().orElse(null);
 
 		Assert.assertEquals(host.getValue(), "github.com");
 		Assert.assertEquals(port.getValue(), "21");

@@ -6,6 +6,7 @@ import com.fo0.robot.client.gui.main.MainGUI;
 import com.fo0.robot.controller.Controller;
 import com.fo0.robot.controller.ControllerChain;
 import com.fo0.robot.update.UpdateUtils;
+import com.fo0.robot.utils.CONSTANTS_PATTERN_CONF;
 import com.fo0.robot.utils.Logger;
 
 public class ConfigManager {
@@ -13,6 +14,14 @@ public class ConfigManager {
 	public static void applyConfigLoggingOption() {
 		if (Controller.config.logFile) {
 			Logger.activateFileLogging();
+		}
+	}
+
+	public static void applyVariablePattern() {
+		if (StringUtils.isNotBlank(Controller.config.variable)
+				&& !StringUtils.equals(CONSTANTS_PATTERN_CONF.VARIABLE_SIGN, Controller.config.variable)) {
+			Logger.info("Set Variable Pattern: '" + Controller.config.variable + "'");
+			CONSTANTS_PATTERN_CONF.VARIABLE_SIGN = Controller.config.variable;
 		}
 	}
 

@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.fo0.robot.enums.EActionType;
-import com.fo0.robot.utils.CONSTANTS;
+import com.fo0.robot.utils.CONSTANTS_PATTERN;
 import com.fo0.robot.utils.Random;
 import com.google.common.collect.Lists;
 
@@ -24,7 +24,7 @@ public class ActionItem {
 	private String id = Random.alphanumeric(10);
 
 	@Builder.Default
-	private EActionType type = EActionType.Commandline;
+	private EActionType type = EActionType.Simple_Commandline;
 
 	private String description;
 
@@ -36,7 +36,7 @@ public class ActionItem {
 	public List<KeyValue> parsedValue() {
 		List<KeyValue> list = Lists.newArrayList();
 		switch (type) {
-		case Commandline:
+		case Simple_Commandline:
 			// detected cmd ... do safety skip
 			list.add(KeyValue.builder().key(type.name()).value(value).build());
 			break;
@@ -44,10 +44,10 @@ public class ActionItem {
 		case Sleep:
 			list.add(KeyValue.builder().key(type.name()).value(value).build());
 			break;
-			
+
 		default:
 			// doing basic parsing
-			Pattern p = CONSTANTS.BASIC_PATTERN;
+			Pattern p = CONSTANTS_PATTERN.BASIC_PATTERN;
 			Matcher m = p.matcher(value);
 
 			while (m.find()) {

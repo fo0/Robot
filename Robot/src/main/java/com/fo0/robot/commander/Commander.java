@@ -3,6 +3,8 @@ package com.fo0.robot.commander;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -12,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.fo0.robot.listener.ValueChangeListener;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.OSCheck;
+import com.google.common.collect.Lists;
 
 public class Commander {
 
@@ -27,6 +30,10 @@ public class Commander {
 	}
 
 	public String execute(boolean shell, String homedir, String cmds) {
+		return execute(shell, homedir, false, Lists.newArrayList(cmds));
+	}
+
+	public String execute(boolean shell, String homedir, boolean quoting, List<String> cmds) {
 		if (cmds == null || cmds.isEmpty()) {
 			Logger.info("stopped cmd command is empty");
 			return null;
@@ -35,24 +42,28 @@ public class Commander {
 		CommandLine cli = null;
 		DefaultExecutor executor = null;
 
-		switch (OSCheck.getOperatingSystemType()) {
-		case Windows:
-			cli = new CommandLine("cmd");
-			if (shell) {
-				cli.addArgument("/c ");
-			}
-			break;
+		if (shell) {
+			switch (OSCheck.getOperatingSystemType()) {
+			case Windows:
+				cli = new CommandLine("cmd");
+				if (shell) {
+					cli.addArgument("/c");
+				}
+				break;
 
-		case Linux:
-			cli = new CommandLine("/bin/bash");
-			if (shell) {
-				cli.addArgument("-c");
+			case Linux:
+				cli = new CommandLine("/bin/bash");
+				if (shell) {
+					cli.addArgument("-c");
+				}
+				break;
 			}
-			break;
-
+			
+			cli.addArguments(cmds.stream().toArray(String[]::new), quoting);
+		} else {
+			cli = new CommandLine(cmds.get(0));
+			cli.addArguments(cmds.stream().skip(1).toArray(String[]::new), quoting);
 		}
-
-		cli.addArgument(cmds, false);
 
 		Logger.debug("HomeDir: \"" + homedir + "\" => " + StringUtils.join(cli.getArguments(), ","));
 

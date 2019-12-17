@@ -3,6 +3,7 @@ package com.fo0.robot.chain.action;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +29,7 @@ import com.fo0.robot.model.ActionItem;
 import com.fo0.robot.model.FileTransferData;
 import com.fo0.robot.model.Host;
 import com.fo0.robot.model.KeyValue;
-import com.fo0.robot.utils.CONSTANTS;
+import com.fo0.robot.utils.CONSTANTS_PATTERN;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.Utils;
 import com.google.common.base.Stopwatch;
@@ -54,6 +55,10 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		EChainResponse response = EChainResponse.Break;
 
 		switch (type) {
+		case Simple_Commandline:
+			response = simple_commandline(item.getValue().parsedValue());
+			break;
+
 		case Commandline:
 			response = commandline(item.getValue().parsedValue());
 			break;
@@ -128,6 +133,32 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 	}
 
 	public EChainResponse commandline(List<KeyValue> list) throws Exception {
+		List<KeyValue> cmdList = list;
+
+		KeyValue home = cmdList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.HOME)).findFirst()
+				// return user.dir as default
+				.orElse(KeyValue.builder().value(System.getProperty("user.dir")).build());
+		KeyValue cmds = cmdList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.CMDS)).findFirst()
+				.orElse(null);
+
+		ctx.addToLog(type, "HOME: " + home.getValue());
+		ctx.addToLog(type, "CMDs: " + cmds.getValue());
+
+		Commander commander = new Commander(log -> {
+			ctx.addToLogPlain(type, log);
+		});
+
+		commander.execute(false, home.getValue(), false, Arrays.asList(StringUtils.split(cmds.getValue(), ",")));
+
+		if (commander == null || commander.isError()) {
+			ctx.addToLog(type, "error at commander: " + cmds.getKey());
+			return EChainResponse.Failed;
+		}
+
+		return EChainResponse.Continue;
+	}
+
+	public EChainResponse simple_commandline(List<KeyValue> list) throws Exception {
 		List<KeyValue> zipList = list;
 		KeyValue item = zipList.stream().findFirst().orElse(null);
 
@@ -160,8 +191,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse copy(List<KeyValue> list) throws Exception {
 		List<KeyValue> zipList = list;
-		KeyValue src = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-		KeyValue dst = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue src = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
+				.orElse(null);
+		KeyValue dst = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
 		ctx.addToLog(type, "SRC: " + src.getValue());
@@ -180,10 +212,11 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse move(List<KeyValue> list) throws Exception {
 		List<KeyValue> zipList = list;
-		KeyValue src = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-		KeyValue dst = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue src = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
+				.orElse(null);
+		KeyValue dst = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
-		KeyValue force = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.FORCE)).findFirst()
+		KeyValue force = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.FORCE)).findFirst()
 				.orElse(KeyValue.builder().value("false").build());
 
 		ctx.addToLog(type, "SRC: " + src.getValue());
@@ -217,11 +250,14 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse download(List<KeyValue> list) throws Exception {
 		List<KeyValue> downloads = list;
-		KeyValue url = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-		KeyValue path = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst().orElse(
-				KeyValue.builder().key(CONSTANTS.DESTINATION).value(FilenameUtils.getName(url.getValue())).build());
-		KeyValue timeout = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS.TIMEOUT)).findFirst().orElse(
-				KeyValue.builder().key(CONSTANTS.TIMEOUT).value(String.valueOf(TimeUnit.SECONDS.toMillis(5))).build());
+		KeyValue url = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
+				.orElse(null);
+		KeyValue path = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
+				.orElse(KeyValue.builder().key(CONSTANTS_PATTERN.DESTINATION)
+						.value(FilenameUtils.getName(url.getValue())).build());
+		KeyValue timeout = downloads.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.TIMEOUT)).findFirst()
+				.orElse(KeyValue.builder().key(CONSTANTS_PATTERN.TIMEOUT)
+						.value(String.valueOf(TimeUnit.SECONDS.toMillis(5))).build());
 
 		ctx.addToLog(type, "SRC: " + url);
 		ctx.addToLog(type, "DST: " + path);
@@ -257,13 +293,16 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse ssh(List<KeyValue> list) throws Exception {
 		List<KeyValue> sshList = list;
-		KeyValue sshHost = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
-		KeyValue sshPort = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst()
+		KeyValue sshHost = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.HOST)).findFirst()
+				.orElse(null);
+		KeyValue sshPort = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.PORT)).findFirst()
 				.orElse(KeyValue.builder().key("$PORT").value("22").build());
-		KeyValue sshUser = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst().orElse(null);
-		KeyValue sshPassword = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst()
-				.orElse(KeyValue.builder().key(CONSTANTS.PASSWORD).value("").build());
-		KeyValue sshCmd = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS.CMD)).findFirst().orElse(null);
+		KeyValue sshUser = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.USER)).findFirst()
+				.orElse(null);
+		KeyValue sshPassword = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.PASSWORD)).findFirst()
+				.orElse(KeyValue.builder().key(CONSTANTS_PATTERN.PASSWORD).value("").build());
+		KeyValue sshCmd = sshList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.CMD)).findFirst()
+				.orElse(null);
 
 		ctx.addToLog(type, "HOST: " + sshHost.getValue());
 		ctx.addToLog(type, "PORT: " + sshPort.getValue());
@@ -294,8 +333,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse zip(List<KeyValue> list) throws Exception {
 		List<KeyValue> zipList = list;
-		KeyValue zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
+				.orElse(null);
+		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
 		ctx.addToLog(type, "SRC: " + zipSrc.getValue());
@@ -311,9 +351,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse unzip(List<KeyValue> list) throws Exception {
 		List<KeyValue> unzipList = list;
-		KeyValue unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst()
+		KeyValue unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
 				.orElse(null);
-		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
 		ctx.addToLog(type, "SRC: " + unzipSrc.getValue());
@@ -326,14 +366,17 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse scp(List<KeyValue> list) throws Exception {
 		List<KeyValue> scpList = list;
-		KeyValue scpHost = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
-		KeyValue scpPort = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst()
-				.orElse(KeyValue.builder().key(CONSTANTS.PORT).value("22").build());
-		KeyValue scpUser = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst().orElse(null);
-		KeyValue scpPassword = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst()
-				.orElse(KeyValue.builder().key(CONSTANTS.PASSWORD).value("").build());
-		KeyValue scpSrc = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-		KeyValue scpDst = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue scpHost = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.HOST)).findFirst()
+				.orElse(null);
+		KeyValue scpPort = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.PORT)).findFirst()
+				.orElse(KeyValue.builder().key(CONSTANTS_PATTERN.PORT).value("22").build());
+		KeyValue scpUser = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.USER)).findFirst()
+				.orElse(null);
+		KeyValue scpPassword = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.PASSWORD)).findFirst()
+				.orElse(KeyValue.builder().key(CONSTANTS_PATTERN.PASSWORD).value("").build());
+		KeyValue scpSrc = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
+				.orElse(null);
+		KeyValue scpDst = scpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(null);
 
 		ctx.addToLog(type, "HOST: " + scpHost.getValue());
@@ -374,15 +417,17 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse ftp(List<KeyValue> list) throws Exception {
 		List<KeyValue> ftpList = list;
-		KeyValue ftpHost = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.HOST)).findFirst().orElse(null);
-		KeyValue ftpPort = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PORT)).findFirst()
+		KeyValue ftpHost = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.HOST)).findFirst()
+				.orElse(null);
+		KeyValue ftpPort = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.PORT)).findFirst()
 				.orElse(KeyValue.builder().key("PORT").value("21").build());
-		KeyValue ftpUser = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.USER)).findFirst()
+		KeyValue ftpUser = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.USER)).findFirst()
 				.orElse(KeyValue.builder().key("USER").value("anonymous").build());
-		KeyValue ftpPassword = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.PASSWORD)).findFirst()
+		KeyValue ftpPassword = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.PASSWORD)).findFirst()
 				.orElse(KeyValue.builder().key("PASSWORD").value("").build());
-		KeyValue ftpSrc = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-		KeyValue ftpDst = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue ftpSrc = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
+				.orElse(null);
+		KeyValue ftpDst = ftpList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(null);
 
 		ctx.addToLog(type, "HOST: " + ftpHost.getValue());
@@ -413,8 +458,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse tar(List<KeyValue> list) throws Exception {
 		List<KeyValue> zipList = list;
-		KeyValue zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
+				.orElse(null);
+		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
 		ctx.addToLog(type, "SRC: " + zipSrc.getValue());
@@ -430,9 +476,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse untar(List<KeyValue> list) throws Exception {
 		List<KeyValue> unzipList = list;
-		KeyValue unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst()
+		KeyValue unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
 				.orElse(null);
-		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
 		ctx.addToLog(type, "SRC: " + unzipSrc.getValue());
@@ -445,8 +491,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse targz(List<KeyValue> list) throws Exception {
 		List<KeyValue> zipList = list;
-		KeyValue zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
+				.orElse(null);
+		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
 		ctx.addToLog(type, "SRC: " + zipSrc.getValue());
@@ -462,9 +509,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse untargz(List<KeyValue> list) throws Exception {
 		List<KeyValue> unzipList = list;
-		KeyValue unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst()
+		KeyValue unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
 				.orElse(null);
-		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
 		ctx.addToLog(type, "SRC: " + unzipSrc.getValue());
@@ -477,8 +524,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse sevenZip(List<KeyValue> list) throws Exception {
 		List<KeyValue> zipList = list;
-		KeyValue zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst().orElse(null);
-		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue zipSrc = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
+				.orElse(null);
+		KeyValue zipDest = zipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
 		ctx.addToLog(type, "SRC: " + zipSrc.getValue());
@@ -494,9 +542,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 	public EChainResponse unSevenZip(List<KeyValue> list) throws Exception {
 		List<KeyValue> unzipList = list;
-		KeyValue unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.SOURCE)).findFirst()
+		KeyValue unzipSrc = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.SOURCE)).findFirst()
 				.orElse(null);
-		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS.DESTINATION)).findFirst()
+		KeyValue unzipDst = unzipList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.DESTINATION)).findFirst()
 				.orElse(KeyValue.builder().build());
 
 		ctx.addToLog(type, "SRC: " + unzipSrc.getValue());

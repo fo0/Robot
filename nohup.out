@@ -1,0 +1,20 @@
+
+(mousepad:54108): Gtk-WARNING **: 12:48:13.794: Theme parsing error: <data>:2:29: The style property GtkButton:default-border is deprecated and shouldn't be used anymore. It will be removed in a future version
+
+(mousepad:54108): Gtk-WARNING **: 12:48:13.794: Theme parsing error: <data>:3:37: The style property GtkButton:default-outside-border is deprecated and shouldn't be used anymore. It will be removed in a future version
+
+(mousepad:54108): Gtk-WARNING **: 12:48:13.794: Theme parsing error: <data>:4:27: The style property GtkButton:inner-border is deprecated and shouldn't be used anymore. It will be removed in a future version
+
+(mousepad:54108): Gtk-WARNING **: 12:48:13.795: Theme parsing error: <data>:5:31: The style property GtkWidget:focus-line-width is deprecated and shouldn't be used anymore. It will be removed in a future version
+
+(mousepad:54108): Gtk-WARNING **: 12:48:13.795: Theme parsing error: <data>:6:28: The style property GtkWidget:focus-padding is deprecated and shouldn't be used anymore. It will be removed in a future version
+
+(mousepad:54113): Gtk-WARNING **: 12:48:18.638: Theme parsing error: <data>:2:29: The style property GtkButton:default-border is deprecated and shouldn't be used anymore. It will be removed in a future version
+
+(mousepad:54113): Gtk-WARNING **: 12:48:18.638: Theme parsing error: <data>:3:37: The style property GtkButton:default-outside-border is deprecated and shouldn't be used anymore. It will be removed in a future version
+
+(mousepad:54113): Gtk-WARNING **: 12:48:18.638: Theme parsing error: <data>:4:27: The style property GtkButton:inner-border is deprecated and shouldn't be used anymore. It will be removed in a future version
+
+(mousepad:54113): Gtk-WARNING **: 12:48:18.638: Theme parsing error: <data>:5:31: The style property GtkWidget:focus-line-width is deprecated and shouldn't be used anymore. It will be removed in a future version
+
+(mousepad:54113): Gtk-WARNING **: 12:48:18.638: Theme parsing error: <data>:6:28: The style property GtkWidget:focus-padding is deprecated and shouldn't be used anymore. It will be removed in a future version

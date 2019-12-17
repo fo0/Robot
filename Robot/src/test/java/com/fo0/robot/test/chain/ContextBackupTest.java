@@ -19,7 +19,7 @@ public class ContextBackupTest {
 	@Test
 	public void saveContext() {
 		ChainActions actions = new ChainActions();
-		actions.addActionItem(ActionItem.builder().type(EActionType.Commandline).value("echo lol")
+		actions.addActionItem(ActionItem.builder().type(EActionType.Simple_Commandline).value("echo lol")
 				.description("description example").build());
 		actions.start();
 		Assert.assertEquals(EState.Success, actions.getState());

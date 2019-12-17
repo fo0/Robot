@@ -25,6 +25,9 @@ public class Controller {
 		// startup message
 		startUpMessage();
 
+		// change default variable
+		ConfigManager.applyVariablePattern();
+
 		// apply the config options
 		modules();
 
