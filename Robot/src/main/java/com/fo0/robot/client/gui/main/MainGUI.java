@@ -48,6 +48,7 @@ public class MainGUI {
 	private static JTextArea areaChain;
 	private static JTextArea areaConsole;
 	private static JLabel lblProcessingState;
+	private static JButton btnStop;
 
 	/**
 	 * Launch the application.
@@ -59,6 +60,20 @@ public class MainGUI {
 		frame.setVisible(true);
 	}
 
+	public static void toggleProcessStopButton(EMode mode) {
+		currentMode = mode;
+
+		switch (mode) {
+		case Normal:
+			frame.setSize(655, 339);
+			break;
+
+		case ConsoleMaximized:
+			frame.setSize(655, 528);
+			break;
+		}
+	}
+	
 	public static void toggleConsole(EMode mode) {
 		currentMode = mode;
 
@@ -145,7 +160,7 @@ public class MainGUI {
 
 					Utils.sleep(TimeUnit.SECONDS, 1);
 
-					ControllerChain.getChain().start();
+					ControllerChain.start();
 				}).start();
 
 			}
@@ -186,14 +201,9 @@ public class MainGUI {
 		btnTgleErrors.setBounds(468, 0, 105, 24);
 		panelTop.add(btnTgleErrors);
 
-		lblProcessingState = new JLabel("STOPPED");
-		lblProcessingState.setHorizontalAlignment(SwingConstants.CENTER);
-		lblProcessingState.setFont(new Font("Dialog", Font.BOLD, 14));
-		lblProcessingState.setOpaque(true);
-		lblProcessingState.setForeground(Color.BLACK);
-		lblProcessingState.setBackground(Color.GREEN);
-		lblProcessingState.setBounds(363, 0, 98, 25);
-		panelTop.add(lblProcessingState);
+		createStopButton(panelTop);
+		
+		createProcessLabel(panelTop);
 
 		JPanel panelTable = new JPanel();
 		panelTable.setBounds(0, 26, 653, 265);
@@ -340,6 +350,35 @@ public class MainGUI {
 		addChainObservers();
 	}
 
+	/**
+	 * @param panelTop
+	 */
+	private static void createProcessLabel(JPanel panelTop) {
+		lblProcessingState = new JLabel("STOPPED");
+		lblProcessingState.setHorizontalAlignment(SwingConstants.CENTER);
+		lblProcessingState.setFont(new Font("Dialog", Font.BOLD, 14));
+		lblProcessingState.setOpaque(true);
+		lblProcessingState.setForeground(Color.BLACK);
+		lblProcessingState.setBackground(Color.GREEN);
+		lblProcessingState.setBounds(363, 0, 98, 25);
+		panelTop.add(lblProcessingState);
+	}
+
+	/**
+	 * @param panelTop
+	 */
+	private static void createStopButton(JPanel panelTop) {
+		btnStop = new JButton("STOP");
+		btnStop.setVisible(false);
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ControllerChain.stop();
+			}
+		});
+		btnStop.setBounds(291, 0, 70, 24);
+		panelTop.add(btnStop);
+	}
+
 	public static void addItem(ActionItem action) {
 		tableModel.addRow(action);
 	}
@@ -388,7 +427,7 @@ public class MainGUI {
 	}
 
 	public static void addChainObservers() {
-		ControllerChain.getChain().addStateObserver(GUIStateObserver.builder().label(lblProcessingState).build());
+		ControllerChain.getChain().addStateObserver(GUIStateObserver.builder().label(lblProcessingState).btnStop(btnStop).build());
 	}
 
 	/**

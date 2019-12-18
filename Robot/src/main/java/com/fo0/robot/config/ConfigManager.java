@@ -69,13 +69,13 @@ public class ConfigManager {
 		// detect if cli and path set, automatically execute chain
 		if (StringUtils.isNotBlank(Controller.config.configFile)) {
 			Logger.info("read config-file: " + Controller.config.configFile);
-			ControllerChain.getChain().start();
+			ControllerChain.start();
 		}
 
 		// detect if cli and path set, automatically execute chain
 		if (StringUtils.isNotBlank(Controller.config.config)) {
 			Logger.info("read config: " + Controller.config.config);
-			ControllerChain.getChain().start();
+			ControllerChain.start();
 		}
 
 	}
