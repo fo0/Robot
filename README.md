@@ -3,6 +3,9 @@
 Simple Robot which is doing user defined actions for you. <br>
 You can load and save your actions via configs to persist your work.
 
+# Status
+![](https://github.com/fo0/Robot/workflows/Maven-Build/badge.svg)
+
 # Actions
 
 * Commandline
