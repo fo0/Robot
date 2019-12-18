@@ -4,7 +4,7 @@ Simple Robot which is doing user defined actions for you. <br>
 You can load and save your actions via configs to persist your work.
 
 # Status
-![Build Status](https://github.com/fo0/Robot/workflows/Java%20CI/badge.svg)
+![](https://github.com/fo0/Robot/workflows/Build/badge.svg)
 
 # Actions
 
