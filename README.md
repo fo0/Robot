@@ -3,6 +3,9 @@
 Simple Robot which is doing user defined actions for you. <br>
 You can load and save your actions via configs to persist your work.
 
+# Status
+[![Actions Status](https://xxx.execute-api.us-west-2.amazonaws.com/production/badge/{fo0}/{Robot})](https://xxx.execute-api.us-west-2.amazonaws.com/production/results/{fo0}/{Robot})
+
 # Actions
 
 * Commandline
