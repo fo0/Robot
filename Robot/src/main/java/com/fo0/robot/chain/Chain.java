@@ -96,7 +96,7 @@ public class Chain<T> {
 
 	public void start() {
 		if (chains == null || chains.isEmpty()) {
-			Logger.info("starting skipping chain is empty");
+			Logger.info("skipping start, chain is empty");
 			return;
 		}
 

@@ -1,6 +1,7 @@
 package com.fo0.robot.test.chain;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import com.fo0.robot.chain.EState;
@@ -14,21 +15,21 @@ public class SimpleChainTest {
 		ChainActions actions = new ChainActions();
 		actions.addActionItem(ActionItem.builder().value("echo lol").description("description example").build());
 		actions.start();
-		Assert.assertEquals(EState.Success, actions.getState());
+		assertEquals(EState.Success, actions.getState());
 	}
 
 	@Test
 	public void stopTest() {
 		ChainActions actions = new ChainActions();
 		actions.start();
-		Assert.assertEquals(EState.Stopped, actions.getState());
+		assertEquals(EState.Stopped, actions.getState());
 	}
 
 	@Test
 	public void failTest() {
 		ChainActions actions = new ChainActions();
-		actions.addActionItem(ActionItem.builder().value("lol").build());
+		actions.addActionItem(ActionItem.builder().value("no-command").build());
 		actions.start();
-		Assert.assertEquals(EState.Failed, actions.getState());
+		assertEquals(EState.Failed, actions.getState());
 	}
 }

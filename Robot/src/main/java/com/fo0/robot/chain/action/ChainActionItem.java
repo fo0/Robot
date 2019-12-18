@@ -33,6 +33,7 @@ import com.fo0.robot.utils.CONSTANTS_PATTERN;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.Utils;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 
 import lombok.Builder;
 
@@ -148,7 +149,9 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 			ctx.addToLogPlain(type, log);
 		});
 
-		commander.execute(false, home.getValue(), false, Arrays.asList(StringUtils.split(cmds.getValue(), ",")));
+		List<String> commands = Arrays.asList(StringUtils.split(cmds.getValue(), ","));
+
+		commander.execute(false, home.getValue(), false, commands);
 
 		if (commander == null || commander.isError()) {
 			ctx.addToLog(type, "error at commander: " + cmds.getKey());
@@ -159,17 +162,28 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 	}
 
 	public EChainResponse simple_commandline(List<KeyValue> list) throws Exception {
-		List<KeyValue> zipList = list;
-		KeyValue item = zipList.stream().findFirst().orElse(null);
+		List<KeyValue> cmdList = list;
+
+		KeyValue home = cmdList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.HOME)).findFirst()
+				// return user.dir as default
+				.orElse(KeyValue.builder().value(System.getProperty("user.dir")).build());
+		KeyValue cmds = cmdList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.CMD)).findFirst().orElse(null);
+
+		if (cmds == null) {
+			cmds = cmdList.stream().findFirst().orElse(null);
+		}
+
+		ctx.addToLog(type, "HOME: " + home.getValue());
+		ctx.addToLog(type, "CMD: " + cmds.getValue());
 
 		Commander commander = new Commander(log -> {
 			ctx.addToLogPlain(type, log);
 		});
 
-		commander.execute(true, System.getProperty("user.dir"), item.getValue());
+		commander.execute(true, home.getValue(), cmds.getValue());
 
 		if (commander == null || commander.isError()) {
-			ctx.addToLog(type, "error at commander: " + item.getKey());
+			ctx.addToLog(type, "error at commander: " + cmds.getKey());
 			return EChainResponse.Failed;
 		}
 
