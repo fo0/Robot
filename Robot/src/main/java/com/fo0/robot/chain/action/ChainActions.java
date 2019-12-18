@@ -7,6 +7,7 @@ import com.fo0.robot.chain.Chain;
 import com.fo0.robot.chain.ChainItem;
 import com.fo0.robot.chain.ChainStateObserver;
 import com.fo0.robot.chain.EState;
+import com.fo0.robot.config.ShutDownConfigObserver;
 import com.fo0.robot.controller.Controller;
 import com.fo0.robot.model.ActionItem;
 import com.google.common.collect.Lists;
@@ -17,6 +18,8 @@ public class ChainActions extends Chain<ActionContext> {
 
 	public ChainActions() {
 		super("Chain Actions", ActionContext.builder().build());
+		
+		addStateObserver(new ShutDownConfigObserver());
 	}
 
 	public Entry<Integer, ActionItem> addActionItem(ActionItem item) {

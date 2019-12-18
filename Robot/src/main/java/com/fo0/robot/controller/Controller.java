@@ -9,11 +9,15 @@ import com.fo0.robot.config.ConfigParser;
 import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.Logger;
 
+import lombok.Getter;
+
 public class Controller {
 
 	public static String[] arg;
-	public static Config config = null;
 	private static MainGUI gui = null;
+
+	@Getter
+	public static Config config = null;
 
 	public static void bootstrap(String[] args) {
 		arg = args;
@@ -57,10 +61,6 @@ public class Controller {
 	private static void modules() {
 		addShutdownHook();
 		ControllerChain.bootstrap();
-	}
-
-	public static Config getConfig() {
-		return config;
 	}
 
 }

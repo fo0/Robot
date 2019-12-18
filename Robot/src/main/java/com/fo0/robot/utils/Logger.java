@@ -28,7 +28,7 @@ public class Logger {
 
 	public static void debug(String message) {
 		String msg = "[DEBUG] " + message;
-		if (CONSTANTS.DEBUG || (Controller.getConfig() != null && Controller.getConfig().debug))
+		if (CONSTANTS.DEBUG || (Controller.getConfig() != null && Controller.getConfig().isDebug()))
 			System.out.println(msg);
 
 		addToLog(msg);

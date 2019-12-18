@@ -3,6 +3,9 @@ package com.fo0.robot.config;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionsBase;
 
+import lombok.Getter;
+
+@Getter
 public class Config extends OptionsBase {
 
 	@Option(name = "nogui", abbrev = 'n', category = "GUI", help = "Graphical User Interface", defaultValue = "false")
@@ -32,4 +35,7 @@ public class Config extends OptionsBase {
 	@Option(name = "variable-pattern", abbrev = 'p', category = "Variable", help = "Variable Pattern", defaultValue = "$")
 	public String variable;
 
+	@Option(name = "auto-terminate", abbrev = 't', category = "System", help = "Automatically terminate after run", defaultValue = "false")
+	public boolean terminate;
+	
 }
