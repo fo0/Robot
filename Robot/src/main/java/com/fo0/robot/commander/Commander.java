@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,47 +33,46 @@ public class Commander {
 	public Commander() {
 	}
 
-	public String execute(boolean shell, String homedir, String cmds) {
-		return execute(shell, homedir, false, Lists.newArrayList(cmds));
+	public String execute(boolean wait, boolean shell, String homedir, String cmds) {
+		return execute(wait, shell, homedir, false, Lists.newArrayList(cmds));
 	}
 
-	public String execute(boolean shell, String homedir, boolean quoting, List<String> cmds) {
+	public String execute(boolean wait, boolean shell, String homedir, boolean quoting, List<String> cmds) {
 		if (cmds == null || cmds.isEmpty()) {
 			Logger.info("stopped cmd command is empty");
 			return null;
 		}
 
-		CommandLine cli = null;
-		DefaultExecutor executor = null;
+		CommandLine cmdLine = null;
 
 		if (shell) {
 			switch (OSCheck.getOperatingSystemType()) {
 			case Windows:
-				cli = new CommandLine("cmd");
+				cmdLine = new CommandLine("cmd");
 				if (shell) {
-					cli.addArgument("/c");
+					cmdLine.addArgument("/c");
 				}
 				break;
 
 			case Linux:
-				cli = new CommandLine("/bin/bash");
+				cmdLine = new CommandLine("/bin/bash");
 				if (shell) {
-					cli.addArgument("-c");
+					cmdLine.addArgument("-c");
 				}
 				break;
 			}
 
-			cli.addArguments(cmds.stream().toArray(String[]::new), quoting);
+			cmdLine.addArguments(cmds.stream().toArray(String[]::new), quoting);
 		} else {
-			cli = new CommandLine(cmds.get(0));
-			cli.addArguments(cmds.stream().skip(1).toArray(String[]::new), quoting);
+			cmdLine = new CommandLine(cmds.get(0));
+			cmdLine.addArguments(cmds.stream().skip(1).toArray(String[]::new), quoting);
 		}
 
-		Logger.debug("HomeDir: \"" + Paths.get(homedir).toAbsolutePath() + "\" => " + cli.getExecutable() + ", "
-				+ StringUtils.join(cli.getArguments(), ","));
+		Logger.debug("HomeDir: '" + Paths.get(homedir).toAbsolutePath() + "' => " + cmdLine.getExecutable() + ", "
+				+ StringUtils.join(cmdLine.getArguments(), ","));
 
 		try {
-			executor = new DefaultExecutor();
+			Executor executor = createDefaultExecutor();
 			executor.setStreamHandler(new PumpStreamHandler(new OutputStream() {
 
 				@Override
@@ -101,20 +103,31 @@ public class Commander {
 				}
 			}));
 
+			// configure timeout
+			// executor.setWatchdog(new ExecuteWatchdog(-1));
+
 			executor.setWorkingDirectory(new File(homedir));
-			executor.execute(cli);
 
-			try {
-				executor.wait(TimeUnit.SECONDS.toMillis(30));
-			} catch (Exception e) {
+			if (wait) {
+				executor.execute(cmdLine);
+			} else {
+				DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+				executor.execute(cmdLine, resultHandler);
 			}
-
 		} catch (Exception e) {
 			error = true;
-			Logger.error("failed commander in Cmd: " + cli + " | " + e);
+			Logger.error("failed commander in Cmd: " + cmdLine + " | " + e);
 			Logger.debug(e.getMessage());
 		}
+
 		return buffer.toString();
+	}
+
+	/**
+	 * @return
+	 */
+	private DefaultExecutor createDefaultExecutor() {
+		return new DefaultExecutor();
 	}
 
 	public boolean isError() {

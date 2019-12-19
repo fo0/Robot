@@ -26,5 +26,6 @@ public class CONSTANTS_PATTERN {
 	public static final String CMD = CONSTANTS_PATTERN_CONF.VARIABLE_SIGN + "CMD";
 	public static final String CMDS = CONSTANTS_PATTERN_CONF.VARIABLE_SIGN + "CMDS";
 	public static final String HOME = CONSTANTS_PATTERN_CONF.VARIABLE_SIGN + "HOME";
-
+	public static final String WAIT = CONSTANTS_PATTERN_CONF.VARIABLE_SIGN + "WAIT";
+	
 }

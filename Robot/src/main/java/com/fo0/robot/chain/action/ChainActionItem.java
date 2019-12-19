@@ -136,25 +136,32 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 	public EChainResponse commandline(List<KeyValue> list) throws Exception {
 		List<KeyValue> cmdList = list;
 
-		KeyValue home = cmdList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.HOME)).findFirst()
-				// return user.dir as default
-				.orElse(KeyValue.builder().value(System.getProperty("user.dir")).build());
-		KeyValue cmds = cmdList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.CMDS)).findFirst()
-				.orElse(null);
-
-		ctx.addToLog(type, "HOME: " + home.getValue());
-		ctx.addToLog(type, "CMDs: " + cmds.getValue());
+		//@formatter:off
+		KeyValue WAIT = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.WAIT, "true");
+		KeyValue HOME = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.HOME, "user.dir");
+		KeyValue CMDS = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.CMDS, null);
+		//formatter:on
+		
+		ctx.addToLog(type, "WAIT: " + WAIT.getValue());
+		ctx.addToLog(type, "HOME: " + HOME.getValue());
+		ctx.addToLog(type, "CMDs: " + CMDS.getValue());
 
 		Commander commander = new Commander(log -> {
 			ctx.addToLogPlain(type, log);
 		});
 
-		List<String> commands = Arrays.asList(StringUtils.split(cmds.getValue(), ","));
+		List<String> commands = Arrays.asList(StringUtils.split(CMDS.getValue(), ","));
 
-		commander.execute(false, home.getValue(), false, commands);
+		//@formatter:off
+		commander.execute(Boolean.valueOf(WAIT.getValue()),
+				false, 
+				HOME.getValue(), 
+				false, 
+				commands);
+		//@formatter:on
 
 		if (commander == null || commander.isError()) {
-			ctx.addToLog(type, "error at commander: " + cmds.getKey());
+			ctx.addToLog(type, "error at commander: " + CMDS.getKey());
 			return EChainResponse.Failed;
 		}
 
@@ -164,26 +171,22 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 	public EChainResponse simple_commandline(List<KeyValue> list) throws Exception {
 		List<KeyValue> cmdList = list;
 
-		KeyValue home = cmdList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.HOME)).findFirst()
-				// return user.dir as default
-				.orElse(KeyValue.builder().value(System.getProperty("user.dir")).build());
-		KeyValue cmds = cmdList.stream().filter(e -> e.getKey().equals(CONSTANTS_PATTERN.CMD)).findFirst().orElse(null);
+		//@formatter:off
+		KeyValue HOME = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.HOME, "user.dir");
+		KeyValue CMD = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.CMD,cmdList.stream().map(KeyValue::getValue).findFirst().orElse(null));
+		//@formatter:on
 
-		if (cmds == null) {
-			cmds = cmdList.stream().findFirst().orElse(null);
-		}
-
-		ctx.addToLog(type, "HOME: " + home.getValue());
-		ctx.addToLog(type, "CMD: " + cmds.getValue());
+		ctx.addToLog(type, "HOME: " + HOME.getValue());
+		ctx.addToLog(type, "CMD: " + CMD.getValue());
 
 		Commander commander = new Commander(log -> {
 			ctx.addToLogPlain(type, log);
 		});
 
-		commander.execute(true, home.getValue(), cmds.getValue());
+		commander.execute(true, true, HOME.getValue(), CMD.getValue());
 
 		if (commander == null || commander.isError()) {
-			ctx.addToLog(type, "error at commander: " + cmds.getKey());
+			ctx.addToLog(type, "error at commander: " + CMD.getKey());
 			return EChainResponse.Failed;
 		}
 

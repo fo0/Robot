@@ -1,5 +1,6 @@
 package com.fo0.robot.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.fo0.robot.controller.Controller;
@@ -12,26 +13,35 @@ import com.fo0.robot.controller.Controller;
  */
 public class Logger {
 
+	private static final String DATE_PATTERN = "yyyy-mm-dd HH:mm:ss.SSS";
 	public static FileLog log = null;
 
 	public static void info(String message) {
-		String msg = "[INFO] " + message;
-		System.out.println(msg);
-		addToLog(msg);
+		print("INFO", message);
+		addToLog(message);
 	}
 
 	public static void error(String message) {
-		String msg = "[ERROR] " + message;
-		System.err.println(msg);
-		addToLog(msg);
+		print("ERROR", message);
+		addToLog(message);
 	}
 
 	public static void debug(String message) {
-		String msg = "[DEBUG] " + message;
-		if (CONSTANTS.DEBUG || (Controller.getConfig() != null && Controller.getConfig().isDebug()))
-			System.out.println(msg);
+		if (CONSTANTS.DEBUG || (Controller.getConfig() != null && Controller.getConfig().isDebug())) {
+			print("DEBUG", message);
+		}
 
-		addToLog(msg);
+		addToLog(message);
+	}
+
+	private static void print(String prefix, String message) {
+		//@formatter:off
+		if (prefix.equals("ERROR")) {
+			System.err.println(String.format("%s [%s] %s", new SimpleDateFormat(DATE_PATTERN).format(new Date()), prefix, message));
+		} else {
+			System.out.println(String.format("%s [%s] %s", new SimpleDateFormat(DATE_PATTERN).format(new Date()), prefix, message));
+		}
+		//@formatter:on
 	}
 
 	private static void addToLog(String message) {
