@@ -9,10 +9,32 @@ public class ShutDownConfigObserver implements ChainStateObserver {
 
 	@Override
 	public void finished(EState state) {
-		if (Controller.getConfig() != null && Controller.getConfig().isTerminate()) {
+		if (Controller.getConfig() != null && Controller.getConfig().isTerminate() && hasTerminState(state)) {
 			Logger.info("Detected Configured Terminate after Run... (--terminate)");
 			System.exit(0);
 		}
+	}
+
+	/**
+	 * @param state
+	 * @return
+	 */
+	private boolean hasTerminState(EState state) {
+		if (state == null)
+			return false;
+
+		switch (state) {
+		case Stopped:
+		case Success:
+		case Failed:
+			// valid terminate state
+			return true;
+
+		default:
+			break;
+		}
+
+		return false;
 	}
 
 }

@@ -26,7 +26,9 @@ public class ControllerChain {
 	}
 
 	public static void stop() {
-		thread.stop();
+		if (thread != null)
+			thread.stop();
+		
 		chain.notifyObservers(EState.Stopped);
 	}
 }

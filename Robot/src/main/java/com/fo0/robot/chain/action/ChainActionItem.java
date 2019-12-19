@@ -33,7 +33,6 @@ import com.fo0.robot.utils.CONSTANTS_PATTERN;
 import com.fo0.robot.utils.Logger;
 import com.fo0.robot.utils.Utils;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
 
 import lombok.Builder;
 
@@ -138,7 +137,7 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 
 		//@formatter:off
 		KeyValue WAIT = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.WAIT, "true");
-		KeyValue HOME = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.HOME, "user.dir");
+		KeyValue HOME = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.HOME, System.getProperty("user.dir"));
 		KeyValue CMDS = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.CMDS, null);
 		//formatter:on
 		
@@ -156,7 +155,7 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		commander.execute(Boolean.valueOf(WAIT.getValue()),
 				false, 
 				HOME.getValue(), 
-				false, 
+				true, 
 				commands);
 		//@formatter:on
 
@@ -172,7 +171,7 @@ public class ChainActionItem implements ChainCommand<ActionContext> {
 		List<KeyValue> cmdList = list;
 
 		//@formatter:off
-		KeyValue HOME = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.HOME, "user.dir");
+		KeyValue HOME = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.HOME, System.getProperty("user.dir"));
 		KeyValue CMD = ActionUtils.parseAction(cmdList, CONSTANTS_PATTERN.CMD,cmdList.stream().map(KeyValue::getValue).findFirst().orElse(null));
 		//@formatter:on
 
