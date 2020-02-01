@@ -6,6 +6,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * can be activated with the start option: -l (--logging)
+ * 
+ * @author max
+ *
+ */
 public class FileLog {
 
 	private static final String FILENAME = "robot.log";
@@ -26,9 +32,17 @@ public class FileLog {
 		}
 	}
 
-	public void add(String message) {
+	public void add(String level, String message) {
 		try {
-			buffer.append(new SimpleDateFormat(DATE_PATTERN).format(new Date()) + "> " + message + "\n");
+			//@formatter:off
+			buffer.append(String.format("%s %s [%s] - %s\n",
+					new SimpleDateFormat(DATE_PATTERN).format(new Date()), 
+					level, 
+					StackTraceUtils.methodCaller(4), 
+					message)
+					);
+			//@formatter:on
+
 			flushToDisc();
 		} catch (Exception e) {
 			e.printStackTrace();

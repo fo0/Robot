@@ -24,6 +24,8 @@ public class Controller {
 
 		// parse args for config
 		config = ConfigParser.parseConfig(args);
+		ConfigManager.applyConfigDebugOption();
+		
 		ConfigManager.applyConfigLoggingOption();
 
 		// startup message

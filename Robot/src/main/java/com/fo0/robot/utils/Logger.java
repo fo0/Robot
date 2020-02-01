@@ -3,8 +3,6 @@ package com.fo0.robot.utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.fo0.robot.controller.Controller;
-
 /**
  * TODO: Add java.utils.logging or log4j as logger
  * 
@@ -18,35 +16,42 @@ public class Logger {
 
 	public static void info(String message) {
 		print("INFO", message);
-		addToLog(message);
+		addToLog("INFO", message);
 	}
 
 	public static void error(String message) {
 		print("ERROR", message);
-		addToLog(message);
+		addToLog("ERROR", message);
 	}
 
 	public static void debug(String message) {
-		if (CONSTANTS.DEBUG || (Controller.getConfig() != null && Controller.getConfig().isDebug())) {
+		if (CONSTANTS.DEBUG) {
 			print("DEBUG", message);
 		}
 
-		addToLog(message);
+		addToLog("DEBUG", message);
 	}
 
 	private static void print(String prefix, String message) {
 		//@formatter:off
-		if (prefix.equals("ERROR")) {
-			System.err.println(String.format("%s [%s] %s", new SimpleDateFormat(DATE_PATTERN).format(new Date()), prefix, message));
+		String msg = "";
+		if(CONSTANTS.DEBUG) {
+			msg = String.format("%s %s [%s] - %s", new SimpleDateFormat(DATE_PATTERN).format(new Date()), prefix, StackTraceUtils.methodCaller(2), message);
 		} else {
-			System.out.println(String.format("%s [%s] %s", new SimpleDateFormat(DATE_PATTERN).format(new Date()), prefix, message));
+			msg = String.format("%s [%s] %s", new SimpleDateFormat(DATE_PATTERN).format(new Date()), prefix, message);
+		}
+		
+		if (prefix.equals("ERROR")) {
+			System.err.println(msg);
+		} else {
+			System.out.println(msg);
 		}
 		//@formatter:on
 	}
 
-	private static void addToLog(String message) {
+	private static void addToLog(String level, String message) {
 		if (log != null) {
-			log.add(message);
+			log.add(level, message);
 		}
 	}
 

@@ -13,10 +13,13 @@ public class Config extends OptionsBase {
 
 	@Option(name = "config", abbrev = 'c', category = "Config", help = "Read Plain-Config", defaultValue = "")
 	public String config;
-
+	
 	@Option(name = "configFile", abbrev = 'f', category = "Config", help = "Read Config-File by Path", defaultValue = "")
 	public String configFile;
 
+	@Option(name = "config-detect", abbrev = 'd', category = "Config", help = "Auto detect and load config", defaultValue = "true")
+	public boolean configDetect;
+	
 	@Option(name = "verbose", abbrev = 'v', category = "Verbose", help = "Debug Log Level", defaultValue = "false")
 	public boolean debug;
 

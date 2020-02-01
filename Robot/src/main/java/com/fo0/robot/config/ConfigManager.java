@@ -1,11 +1,14 @@
 package com.fo0.robot.config;
 
+import java.nio.file.Path;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.fo0.robot.client.gui.main.MainGUI;
 import com.fo0.robot.controller.Controller;
 import com.fo0.robot.controller.ControllerChain;
 import com.fo0.robot.update.UpdateUtils;
+import com.fo0.robot.utils.CONSTANTS;
 import com.fo0.robot.utils.CONSTANTS_PATTERN_CONF;
 import com.fo0.robot.utils.Logger;
 
@@ -26,16 +29,22 @@ public class ConfigManager {
 	}
 
 	public static void applyConfig() {
-		if (Controller.config.configFile != null && !Controller.config.configFile.isEmpty()) {
-			ControllerChain.getChain().getContext().loadFromFile(Controller.config.configFile);
-		}
-
-		// "[{\"id\":\"7HB23fC8dI\",\"type\":\"COPY\",\"description\":\"COPY
-		// file\",\"value\":\"$SRC(robot.jar) $DST(robot2.jar)\",\"active\":true}]"
-
+		// direct-config > configFile > auto-detect-config
 		if (StringUtils.isNotBlank(Controller.config.config)) {
 			// using config via direct load in
 			ControllerChain.getChain().getContext().load(Controller.config.config);
+
+		} else if (StringUtils.isNotBlank(Controller.config.configFile)) {
+			ControllerChain.getChain().getContext().loadFromFile(Controller.config.configFile);
+
+		} else if (Controller.config.isConfigDetect()) {
+			Path detectedConfig = ConfigDetector.searchRobotConfig(System.getProperty("user.dir"));
+			if (detectedConfig != null && detectedConfig.toFile().exists()) {
+				Logger.info("[ConfigAutoDetect] load config file from path: " + detectedConfig.toAbsolutePath());
+				ControllerChain.getChain().getContext().loadFromFile(detectedConfig.toAbsolutePath().toString());
+			} else {
+				Logger.info("[ConfigAutoDetect] could not find config file in: " + System.getProperty("user.dir"));
+			}
 		}
 
 		if (!Controller.config.nogui) {
@@ -82,6 +91,12 @@ public class ConfigManager {
 
 	private static void startWithGUI() {
 		MainGUI.bootstrap();
+	}
+
+	public static void applyConfigDebugOption() {
+		if (Controller.config.isDebug()) {
+			CONSTANTS.DEBUG = true;
+		}
 	}
 
 }
