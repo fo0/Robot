@@ -7,15 +7,15 @@
 
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.compiler.testSource>1.8</maven.compiler.testSource>
-		<maven.compiler.testTarget>1.8</maven.compiler.testTarget>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.testSource>${java.version}</maven.compiler.testSource>
+		<maven.compiler.testTarget>${java.version}</maven.compiler.testTarget>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.jdk>1.8</version.jdk>
+		<version.jdk>${java.version}</version.jdk>
 		<maven.assembly.plugin>3.1.0</maven.assembly.plugin>
 		<maven.compiler.plugin>3.7.0</maven.compiler.plugin>
 		<maven.war.plugin>3.0.1</maven.war.plugin>
